@@ -1,0 +1,11 @@
+pybind11_add_module(average_angle_linkages average_angle_linkages.cc )
+set_target_properties(average_angle_linkages PROPERTIES CXX_STANDARD 14)
+set_target_properties(average_angle_linkages PROPERTIES CXX_STANDARD_REQUIRED ON)
+set_target_properties(average_angle_linkages PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
+target_link_libraries(average_angle_linkages PUBLIC AverageAngleLinkages ElasticRods RodLinkages intel_pybind_14_hack)
+
+pybind11_add_module(cshell_optimization cshell_optimization.cc)
+set_target_properties(cshell_optimization PROPERTIES CXX_STANDARD 14)
+set_target_properties(cshell_optimization PROPERTIES CXX_STANDARD_REQUIRED ON)
+set_target_properties(cshell_optimization PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
+target_link_libraries(cshell_optimization PUBLIC AverageAngleLinkages ElasticRods RodLinkages intel_pybind_14_hack)

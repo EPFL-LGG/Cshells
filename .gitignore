@@ -1,0 +1,45 @@
+# Ignore environment files but keep the folder
+.venv/*
+
+# Ignore IDE configuration files
+.idea
+.vscode/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore compiled python files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Ignore ipynb checkpoints
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+output/*
+
+# Don't ignore .keep files in the repository
+!.keep
+
+# ignore heavy files 
+models/
+data/
+outputs/
+build/
+debug/
+ext/
+*.png
+*.gif
+*.tiff
+*.mat
+*.msh
+*.mp4
+python/ElasticRods/
+python/MeshFEM
+
+# ignore pickled files
+*.p
+*.npy
