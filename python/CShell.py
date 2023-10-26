@@ -2,11 +2,11 @@ import os
 import sys as _sys
 
 SCRIPT_PATH = os.path.abspath(os.getcwd())
-split = SCRIPT_PATH.split("CShells")
+split = SCRIPT_PATH.split("Cshells")
 if len(split)<2:
-    print("Please rename the repository 'CShells'")
+    print("Please rename the repository 'Cshells'")
     raise ValueError
-PATH_TO_CUBICSPLINES = split[0] + "CShells/ext/torchcubicspline"
+PATH_TO_CUBICSPLINES = split[0] + "Cshells/ext/torchcubicspline"
 _sys.path.append(PATH_TO_CUBICSPLINES)
 
 from matplotlib import gridspec
