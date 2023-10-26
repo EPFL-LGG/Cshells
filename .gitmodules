@@ -2,3 +2,7 @@
 	path = ext/torchcubicspline
 	url = git@github.com:qbecky/torchcubicspline.git
 	branch = master
+[submodule "ext/elastic_rods"]
+	path = ext/elastic_rods
+	url = git@github.com:jpanetta/ElasticRods.git
+	branch = master
