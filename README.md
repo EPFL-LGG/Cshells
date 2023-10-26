@@ -62,7 +62,6 @@ conda install pytorch=2.0 -c pytorch
 conda install scipy matplotlib
 pip install opencv-python
 conda install 'jupyterlab>=3.2'
-conda install -c conda-forge cvxpy
 pip install specklepy
 pip install open3d==0.16 geomdl==5.3
 ```
@@ -110,4 +109,4 @@ To run a notebook, first launch jupyter lab in the one of the parent folders:
 jupyter lab
 ```
 
-Make sure you have activated the environment first. For instance, try running the notebook src/GANs/DemoDeploymentGAN.ipynb.
+Make sure you have activated the environment first.
