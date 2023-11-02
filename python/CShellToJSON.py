@@ -1,10 +1,9 @@
 import json
-from typing import Union
+from typing import Union, Any
 import numpy as np
 
 import elastic_rods
 import average_angle_linkages
-import linkage_optimization
 from VisUtilsCurveLinkage import ScalarFieldDeviations
 
 linkageType = Union[
@@ -12,9 +11,7 @@ linkageType = Union[
     average_angle_linkages.AverageAngleSurfaceAttractedLinkage,
 ]
 
-tsfType = linkage_optimization.TargetSurfaceFitter
-
-def ExtractQuantitiesPerSegment(tsf: tsfType, rodEdgesFamily: np.ndarray, subd: int, linkage: linkageType):
+def ExtractQuantitiesPerSegment(tsf: Any, rodEdgesFamily: np.ndarray, subd: int, linkage: linkageType):
     '''
     Args:
         tsf: a target surface fitter used to compute distances to the target surface

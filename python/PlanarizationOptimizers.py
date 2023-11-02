@@ -1,4 +1,3 @@
-from knitro.numpy import *
 import numpy as np
 import torch
 from torch.autograd.functional import jacobian
@@ -7,6 +6,13 @@ import elastic_rods
 import time
 from CShell import GetEdgesFromCurves
 from OptimalSLEquilibrium import ComputeDeployedLinkageStabilityFull, ComputeGradientDeployedLinkageStabilityFull, ComputeJointAngles, ComputeEnergyGradients, ComputeDeployedLinkageStability
+
+try:
+    KNITRO_FOUND = True
+    from knitro.numpy import *
+except Exception as e:
+    KNITRO_FOUND = False
+    print("Knitro may not have been found: {}.".format(e))
 
 torch_dtype = torch.float64
 torch.set_default_dtype(torch_dtype)

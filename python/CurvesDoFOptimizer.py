@@ -1,10 +1,16 @@
-from knitro.numpy import *
 import math
 import numpy as np
 import torch
 
 from PlanarizationOptimizers import QuadsTriangulationsSignedAreas
 from VisUtils import CShellOptimizationCallback
+
+try:
+    KNITRO_FOUND = True
+    from knitro.numpy import *
+except Exception as e:
+    KNITRO_FOUND = False
+    print("Knitro may not have been found: {}.".format(e))
 
 torch.set_default_dtype(torch.float64)
     

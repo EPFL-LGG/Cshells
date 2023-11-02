@@ -262,7 +262,7 @@ class CShell:
         if (not self.flatOnly):
             # Create the linkage optimizer
             if not KNITRO_FOUND:
-                print("Instantiation will fail since knitro 10 has not been found.")
+                print("Instantiation will fail since knitro has not been found.")
             self.MakeLinkageOptimizer(createDeployedViewer=self.createViewers)
 
     #############################################
@@ -641,6 +641,11 @@ class CShell:
         Updated attributes:
             linkageOptimizer : a CShellOptimization object
         '''
+        
+        if not KNITRO_FOUND:
+            print("Knitro has not been found: cannot instantiate the linkage optimizer.")
+            self.linkageOptimizer = None
+            return 0
 
         if self.useSAL:
             self.linkageOptimizer = cshell_optimization.AverageAngleCShellOptimizationSAL(
@@ -1298,62 +1303,6 @@ class CShell:
         pass
 
     def SetOptimizationCallback(self, cb): self.optimizationCallback = cb
-
-    def GetGradientTerm(self, currType, full):
-        '''
-        Change the weight so that we only get one gradient at a time
-
-        Args:
-            currType  : the current objective term we want to evaluate the gradient of
-            full      : whether we run the full optimization (on the curves DoF) or not (just the rest quantities)
-
-        Returns:
-            grad : the corresponding gradient, a torch tensor of shape (nCurvesDoF,)
-        '''
-
-        self.linkageOptimizer.beta = 0.0
-        self.linkageOptimizer.gamma = 0.0
-        self.linkageOptimizer.smoothing_weight = 0.0
-        self.linkageOptimizer.rl_regularization_weight = 0.0
-        self.cpRegWeight = 0.0
-        useGradp = False
-        if currType == linkage_optimization.OptEnergyType.Full:
-            useGradp = True
-            self.ApplyWeights()
-        elif currType == linkage_optimization.OptEnergyType.Target:
-            useGradp = True
-            self.linkageOptimizer.beta = self.dictWeights["beta"]
-        elif currType == linkage_optimization.OptEnergyType.Smoothing:
-            useGradp = True
-            self.linkageOptimizer.smoothing_weight = self.dictWeights["smoothingWeight"]
-        elif currType == linkage_optimization.OptEnergyType.Regularization:
-            useGradp = True
-            self.linkageOptimizer.rl_regularization_weight = self.dictWeights["rlRegWeight"]
-        elif currType == linkage_optimization.OptEnergyType.ElasticBase:
-            useGradp = True
-            self.linkageOptimizer.gamma = self.dictWeights["gamma"]
-        elif currType == linkage_optimization.OptEnergyType.ElasticDeployed:
-            useGradp = True
-            self.linkageOptimizer.gamma = self.dictWeights["gamma"]
-
-        if useGradp:
-            self.linkageOptimizer.invalidateAdjointState()
-            gradp = self.linkageOptimizer.gradp_J(self.linkageOptimizer.getFullDesignParameters(), currType)
-            if full:
-                grad = self.PullDesignParametersToCurvesDoF(torch.tensor(gradp))
-            else:
-                grad = gradp
-
-        else:
-            if currType == "LaplacianCP":
-                self.cpRegWeight = self.dictWeights["cpRegWeight"]
-                gradCP = self.cpRegWeight * LeastSquaresLaplacianFullGradient(self.controlPoints, self.controlPointsFixed, self.lapCP)
-                grad   = self.PullControlPointsToCurvesDoF(gradCP)
-
-        # Restore the weights
-        self.ApplyWeights()
-
-        return grad
 
     def PlotCurveLinkage(self, resetLims=False):
         '''

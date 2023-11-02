@@ -1,5 +1,4 @@
 import json
-from knitro.numpy import *
 import numpy as np
 import os
 import pickle
@@ -13,6 +12,13 @@ from OptimalSLEquilibrium import ComputeJointAngles
 from StraightLinkageToJSON import SaveStraightLinkages
 from VisUtils import PlotHist
 from VisUtilsInitialization import PlotUV
+
+try:
+    KNITRO_FOUND = True
+    from knitro.numpy import *
+except Exception as e:
+    KNITRO_FOUND = False
+    print("Knitro may not have been found: {}.".format(e))
 
 torch_dtype = torch.float64
 torch.set_default_dtype(torch_dtype)

@@ -6,11 +6,17 @@ import time
 import torch
 
 from CShellToJSON import ConvertCShellToJSON
-import linkage_optimization
 from linkage_vis import LinkageViewer
 from LaplacianSmoothing import LeastSquaresLaplacian, LeastSquaresLaplacianFullGradient
 from VisUtilsCurveLinkage import ScalarFieldDeviations
 from vis.fields import ScalarField # In mesh fem
+
+try:
+    KNITRO_FOUND = True
+    import linkage_optimization
+except Exception as e:
+    KNITRO_FOUND = False
+    print("Knitro may not have been found: {}.".format(e))
 
 def ToNumpy(tensor):
     return tensor.cpu().detach().numpy()
@@ -180,10 +186,10 @@ class CShellOptimizationCallback:
                           'FlatnessConstraint_grad_norm': cGradMag})
         idata.update({'iteration_time':   time.time() - self.prevTimeStamp,
                       'extendedDoFsPSRL': self.optimizer.getFullDesignParameters()})
-        if self.computeGradMags:
+        if self.computeGradMags and KNITRO_FOUND:
             idata.update({'{}_grad_norm'.format(t.name): get_component_gradient_norm(self.optimizer, t.type, self.cshell, self.full) for t in self.optimizer.objective.terms})
         else:
-            idata.update({'{}_grad_norm'.format(t.name): 0. for t in self.optimizer.objective.terms})
+            idata.update({'{}_grad_norm'.format(t.name): 0.0 for t in self.optimizer.objective.terms})
 
         # Compute the gradient of the total objective
         totalGradRQ = self.optimizer.gradp_J(self.optimizer.getFullDesignParameters())
@@ -379,8 +385,6 @@ class ConvergencePlotsVisualizer:
 
         self.cumTimes = list(np.cumsum(self.times))
 
-        # print(self.dpsObjective.keys())
-        # print([self.dpsObjective[key] for key in self.dpsObjective.keys()])
         lstObj = []
         for key in self.dpsObjective.keys():
             if key == "LaplacianCP": 

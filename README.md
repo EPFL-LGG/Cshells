@@ -36,11 +36,13 @@
 
 This repository contains the source code and data for the paper C-shells: Deployable Gridshells with Curved Beams, published at SIGGRAPH Asia 2023. 
 
+A C-shell is composed of curved flexible beams connected at rotational joints that can be assembled in a stress-free planar configuration. When actuated, the elastic beams deform and the assembly deploys towards the target 3D shape.
+
 ## Getting started
 
 ### Setup for elastic_rods
 
-Before cloning the repository, make sure you have installed all the dependencies required by [elastic rods](https://github.com/EPFL-LGG/elastic_rods/tree/14a55673b7c65baf2cd410583203abc606965d1b). The design optimization and planarization parts of the code also depend on the commercial optimization package [`knitro`](https://www.artelys.com/solvers/knitro/); these will be omitted from the build if `knitro` is not found.
+Before cloning the repository, make sure you have installed all the dependencies required by [elastic rods](https://github.com/EPFL-LGG/Cshells/tree/main/ext/elastic_rods#c-code-dependencies). The design optimization and planarization parts of the code also depend on the commercial optimization package [`knitro`](https://www.artelys.com/solvers/knitro/); these will be omitted from the build if `knitro` is not found.
 
 ### Cloning the repository
 
@@ -56,14 +58,12 @@ cd Cshells
 The dependencies can be installed as follow
 
 ```bash
-conda create -n CShellEnv python=3.8
-conda activate CShellEnv
-conda install pytorch=2.0 -c pytorch
-conda install scipy matplotlib
-pip install opencv-python
-conda install 'jupyterlab>=3.2'
-pip install specklepy
-pip install open3d==0.16 geomdl==5.3
+conda create -n cshell_env python=3.8
+conda activate cshell_env
+conda install -y pytorch=2.0 -c pytorch
+conda install -y scipy matplotlib
+conda install -y 'jupyterlab>=3.2'
+pip install geomdl==5.3
 ```
 
 To deactivate the environment, simply execute:
@@ -86,7 +86,7 @@ ninja
 Install `pythreejs` using
 
 ```bash
-conda install -c conda-forge pythreejs
+conda install -y pythreejs -c conda-forge
 jupyter lab build
 ```
 
@@ -100,7 +100,6 @@ cd js
 jupyter labextension install .
 ```
 
-
 ### Running a jupyter notebook
 
 To run a notebook, first launch jupyter lab in the one of the parent folders:
@@ -110,3 +109,19 @@ jupyter lab
 ```
 
 Make sure you have activated the environment first.
+
+## Running code
+
+Three main actions can be performed on C-shells: deployment, design optimization, and planarization.
+
+### Deployments
+
+A `CShell` object (defined in `python/CShell.py`) can be instanciated and deployed as shown in the notebook `notebooks/deployments/deployments.ipynb`. A plurality of designs to deploy can be found under `data/models`. A linkage can be deployed either by specifying an attraction surface (see `src/AverageAngleSurfaceAttractedLinkage.hh`) or by fixing some degrees of freedom (see `src/AverageAngleLinkage.hh`). We show different deployment strategies in `notebooks/deployments/deployments_torus_symmetric.ipynb`
+
+### Design Optimization
+
+Once deployed, a `CShell` can be optimized towards a prescribed target surface while keeping the elastic energy in the deformed state low. Some examples can be found under `notebooks/design_optimizations`. In particular `optim_torus_symmetric.ipynb` shows an example of radially symmetric design. The notebook `optim_hexagon_xshell.ipynb` optimizes a design using the [X-shell](https://julianpanetta.com/publication/xshells/) method in the current code framework.
+
+### Planarization
+
+If a target surface in the form of a B-spline surface is known in advance, one may apply the planarization algorithm as shown in `notebooks/planarizations`. The joints are laid out in a plane and optimized so that the C-shell formed by connecting the joints is a good initial guess for further design optimization towards the user defined target surface.
