@@ -1,0 +1,12 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=url
+command=/usr/local/bin/cmake;-P;/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/json-download-prefix/src/json-download-stamp/download-json-download.cmake;COMMAND;/usr/local/bin/cmake;-P;/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/json-download-prefix/src/json-download-stamp/verify-json-download.cmake;COMMAND;/usr/local/bin/cmake;-P;/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/json-download-prefix/src/json-download-stamp/extract-json-download.cmake
+source_dir=/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/cmake/../3rdparty/json
+work_dir=/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/cmake/../3rdparty
+url(s)=https://github.com/nlohmann/json/releases/download/v3.1.2/include.zip
+hash=SHA256=495362ee1b9d03d9526ba9ccf1b4a9c37691abe3a642ddbced13e5778c16660c
+no_extract=
+

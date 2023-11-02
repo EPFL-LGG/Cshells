@@ -1,0 +1,3 @@
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/CMakeFiles/tinyexpr-download.dir
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/CMakeFiles/edit_cache.dir
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/CMakeFiles/rebuild_cache.dir

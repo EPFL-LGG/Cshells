@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/CMakeFiles/glfw-download"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/CMakeFiles/glfw-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/CMakeFiles/glfw-download-complete.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-build.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-configure.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-install.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-mkdir.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-patch.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-test.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"glfw-download"
+		],
+		"name" : "glfw-download"
+	}
+}

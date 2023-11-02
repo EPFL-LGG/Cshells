@@ -1,0 +1,14 @@
+# Target labels
+ spectra-download
+# Source files and their labels
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/spectra/CMakeFiles/spectra-download
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/spectra/CMakeFiles/spectra-download.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/spectra/CMakeFiles/spectra-download-complete.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/spectra/spectra-download-prefix/src/spectra-download-stamp/spectra-download-build.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/spectra/spectra-download-prefix/src/spectra-download-stamp/spectra-download-configure.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/spectra/spectra-download-prefix/src/spectra-download-stamp/spectra-download-download.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/spectra/spectra-download-prefix/src/spectra-download-stamp/spectra-download-install.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/spectra/spectra-download-prefix/src/spectra-download-stamp/spectra-download-mkdir.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/spectra/spectra-download-prefix/src/spectra-download-stamp/spectra-download-patch.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/spectra/spectra-download-prefix/src/spectra-download-stamp/spectra-download-test.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/spectra/spectra-download-prefix/src/spectra-download-stamp/spectra-download-update.rule

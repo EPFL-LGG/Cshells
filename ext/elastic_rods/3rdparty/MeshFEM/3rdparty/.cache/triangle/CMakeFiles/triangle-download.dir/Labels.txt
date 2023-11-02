@@ -1,0 +1,14 @@
+# Target labels
+ triangle-download
+# Source files and their labels
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/triangle/CMakeFiles/triangle-download
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/triangle/CMakeFiles/triangle-download.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/triangle/CMakeFiles/triangle-download-complete.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/triangle/triangle-download-prefix/src/triangle-download-stamp/triangle-download-build.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/triangle/triangle-download-prefix/src/triangle-download-stamp/triangle-download-configure.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/triangle/triangle-download-prefix/src/triangle-download-stamp/triangle-download-download.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/triangle/triangle-download-prefix/src/triangle-download-stamp/triangle-download-install.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/triangle/triangle-download-prefix/src/triangle-download-stamp/triangle-download-mkdir.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/triangle/triangle-download-prefix/src/triangle-download-stamp/triangle-download-patch.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/triangle/triangle-download-prefix/src/triangle-download-stamp/triangle-download-test.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/triangle/triangle-download-prefix/src/triangle-download-stamp/triangle-download-update.rule

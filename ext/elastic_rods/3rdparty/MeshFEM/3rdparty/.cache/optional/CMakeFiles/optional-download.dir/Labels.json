@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/CMakeFiles/optional-download"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/CMakeFiles/optional-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/CMakeFiles/optional-download-complete.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-build.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-configure.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-install.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-mkdir.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-patch.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-test.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"optional-download"
+		],
+		"name" : "optional-download"
+	}
+}

@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/CMakeFiles/json-download"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/CMakeFiles/json-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/CMakeFiles/json-download-complete.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/json-download-prefix/src/json-download-stamp/json-download-build.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/json-download-prefix/src/json-download-stamp/json-download-configure.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/json-download-prefix/src/json-download-stamp/json-download-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/json-download-prefix/src/json-download-stamp/json-download-install.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/json-download-prefix/src/json-download-stamp/json-download-mkdir.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/json-download-prefix/src/json-download-stamp/json-download-patch.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/json-download-prefix/src/json-download-stamp/json-download-test.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/json/json-download-prefix/src/json-download-stamp/json-download-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"json-download"
+		],
+		"name" : "json-download"
+	}
+}

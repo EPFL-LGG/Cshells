@@ -1,0 +1,3 @@
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/pybind11/CMakeFiles/pybind11-download.dir
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/pybind11/CMakeFiles/edit_cache.dir
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/pybind11/CMakeFiles/rebuild_cache.dir

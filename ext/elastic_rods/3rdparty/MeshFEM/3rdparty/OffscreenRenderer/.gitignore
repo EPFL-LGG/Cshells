@@ -1,0 +1,11 @@
+a.out
+.DS_Store
+*.so
+*.ppm
+*.png
+*.mp4
+.nfs*
+build
+build_debug
+__pycache__
+.ipynb_checkpoints

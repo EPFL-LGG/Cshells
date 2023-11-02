@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tbb/CMakeFiles/tbb-download"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tbb/CMakeFiles/tbb-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tbb/CMakeFiles/tbb-download-complete.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tbb/tbb-download-prefix/src/tbb-download-stamp/tbb-download-build.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tbb/tbb-download-prefix/src/tbb-download-stamp/tbb-download-configure.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tbb/tbb-download-prefix/src/tbb-download-stamp/tbb-download-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tbb/tbb-download-prefix/src/tbb-download-stamp/tbb-download-install.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tbb/tbb-download-prefix/src/tbb-download-stamp/tbb-download-mkdir.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tbb/tbb-download-prefix/src/tbb-download-stamp/tbb-download-patch.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tbb/tbb-download-prefix/src/tbb-download-stamp/tbb-download-test.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tbb/tbb-download-prefix/src/tbb-download-stamp/tbb-download-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"tbb-download"
+		],
+		"name" : "tbb-download"
+	}
+}

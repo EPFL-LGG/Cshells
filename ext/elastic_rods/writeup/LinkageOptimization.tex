@@ -1,0 +1,382 @@
+\documentclass[10pt]{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath, amssymb, amsfonts, amsthm}
+\usepackage{upgreek}
+\usepackage{amsthm}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{cancel}
+\usepackage{subfigure}
+\usepackage{mathrsfs}
+\usepackage{outlines}
+\usepackage[font={sf,it}, labelfont={sf,bf}, labelsep=space, belowskip=5pt]{caption}
+\usepackage{hyperref}
+% \usepackage{minted}
+\usepackage{titling}
+\usepackage{xifthen}
+\usepackage{color}
+\usepackage{enumitem}
+
+\usepackage{fancyhdr}
+\usepackage[title]{appendix}
+\usepackage{float}
+
+\usepackage{import}
+
+\usepackage{bm}
+
+\newcommand{\documenttitle}{Rod Linkage Optimization}
+
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\sinc}{sinc}
+\DeclareMathOperator{\rref}{rref}
+\DeclareMathOperator{\cof}{cof}
+\DeclareMathOperator*{\sym}{sym}
+
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\newcommand{\defeq}{\vcentcolon=}
+\renewcommand{\Re}{\operatorname{Re}} \renewcommand{\Im}{\operatorname{Im}}
+\allowdisplaybreaks
+
+\pagestyle{fancy}
+\headheight 24pt
+\headsep    12pt
+\lhead{\documenttitle}
+\rhead{\today}
+\fancyfoot[C]{} % hide the default page number at the bottom
+\lfoot{}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+\providecommand{\abs}[1]{\lvert#1\rvert}
+\providecommand{\norm}[1]{\lVert#1\rVert}
+\providecommand{\normlr}[1]{\left\lVert#1\right\rVert}
+\providecommand{\dx}{\, \mathrm{d}x}
+% \providecommand{\vint}[2]{\int_{#1} \! #2 \, \mathrm{d}x}
+% \providecommand{\sint}[2]{\int_{\partial #1} \! #2 \, \mathrm{d}A}
+\renewcommand{\div}{\nabla \cdot}
+\providecommand{\cross}{\times}
+\providecommand{\curl}{\nabla \cross}
+\providecommand{\grad}{\nabla}
+\providecommand{\laplacian}{\bigtriangleup}
+\providecommand{\shape}{\Omega}
+\providecommand{\mesh}{\mathcal{M}}
+\providecommand{\boundary}{\partial \shape}
+\providecommand{\vint}[3][\x]{\int_{#2} \! #3 \, \mathrm{d}#1}
+\providecommand{\sint}[3][\x]{\int_{#2} \! #3 \, \mathrm{d}A(#1)}
+\providecommand{\lint}[3][\x]{\int_{#2} \! #3 \, \mathrm{d}s(#1)}
+\providecommand{\pder}[2]{\frac{\partial #1}{\partial #2}}
+\providecommand{\spder}[3]{\frac{\partial^2 #1}{\partial #2 \partial #3}}
+\providecommand{\tpder}[4]{\frac{\partial^3 #1}{\partial #2 \partial #3 \partial #4}}
+\providecommand{\tder}[2]{\frac{\mathrm{d} #1}{\mathrm{d} #2}}
+\providecommand{\evalat}[2]{\left.#1\right|_{#2}}
+\renewcommand{\vec}[1]{{\bf #1}}
+
+\providecommand{\tderatzero}[2]{\left.\frac{\mathrm{d} #1}{\mathrm{d} #2}\right|_{#2 = 0}}
+
+\newcommand{\TODO}[1]{\textbf{****** {\bf{[#1]}} ******}}
+
+\usepackage{prettyref}
+\newrefformat{sec}{Section~\ref{#1}}
+\newrefformat{tbl}{Table~\ref{#1}}
+\newrefformat{fig}{Figure~\ref{#1}}
+\newrefformat{chp}{Chapter~\ref{#1}}
+\newrefformat{eqn}{\eqref{#1}}
+\newrefformat{set}{\eqref{#1}}
+\newrefformat{alg}{Algorithm~\ref{#1}}
+\newrefformat{apx}{Appendix~\ref{#1}}
+\newrefformat{prop}{Proposition~\ref{#1}}
+\newcommand\pr[1]{\prettyref{#1}}
+
+\def\normal{{\bf n}}
+\def\n{\normal}
+\def\a{\vec{a}}
+\def\b{\vec{b}}
+\def\d{\vec{d}}
+\def\t{\vec{t}}
+\def\x{\vec{x}}
+\def\X{\vec{X}}
+\def\y{\vec{y}}
+\def\z{\vec{z}}
+\def\u{\vec{u}}
+\def\f{\vec{f}}
+\def\w{\vec{w}}
+\def\p{\vec{p}}
+\def\r{\vec{r}}
+\def\v{\vec{v}}
+\def\e{\vec{e}}
+\def\thvec{{\bm \theta}}
+\def\ue{\vec{u}^\e}
+\def\fu{\pder{\f}{u}}
+\def\fv{\pder{\f}{v}}
+\def\strain{\varepsilon}
+\def\stress{\sigma}
+\def\kb{\kappa \b}
+\def\kbi{(\kappa \b)_i}
+\def\k{\kappa}
+\def\R{\, \mathbb{R}}
+\def\L{\, \mathcal{L}}
+\def\segment{s}
+\def\joint{\jmath}
+
+\def\xflat{\vec{x}^*_\text{2D}}
+\def\xdeploy{\vec{x}^*_\text{3D}}
+\def\xtgt{\vec{x}_\text{tgt}}
+
+\def\delp{\delta \p}
+\def\delxflat{\delta \xflat}
+\def\delxdeploy{\delta \xdeploy}
+\def\delw{\delta \w}
+\def\dely{\delta \y}
+
+\providecommand\ts[1]{\widehat{\vec{t}^{#1}}}
+\providecommand\ds[2]{\widehat{\vec{d}^{#1}_{#2}}}
+\providecommand\rd[2]{\underline{\vec{d}^{#1}_{#2}}}
+\providecommand\rds[2]{\widehat{\underline{\vec{d}^{#1}_{#2}}}}
+\providecommand{\PXport}[1]{P_{\ts{#1}}^{\t^{#1}}}
+
+\providecommand\tsA{\hat{\vec{t}}_A}
+\providecommand\tsB{\hat{\vec{t}}_B}
+\providecommand\ns{\hat{\vec{n}}}
+
+\providecommand{\compose}{\circ}
+\providecommand{\surface}{\Gamma}
+\providecommand{\surfacegrad}{\nabla_\surface}
+\providecommand{\surfacediv}{\surfacegrad \cdot}
+\providecommand{\surfacelaplacian}{\laplacian_\surface}
+
+\providecommand{\epssurface}{{\Gamma_\epsilon}}
+\providecommand{\epssurfacegrad}{\nabla_\epssurface}
+\providecommand{\epssurfacediv}{\epssurfacegrad \cdot}
+\providecommand{\epsnormal}{\normal_\epsilon}
+\providecommand{\epsnormalmat}{\tilde{\normal}_\epsilon}
+\providecommand{\epsphi}{\phi_\epsilon}
+\providecommand{\normalmatder}{\dot{\normal}}
+\providecommand{\shapefunc}{{\bm \phi}}
+
+\def\vt{\vec{v}_t}
+\def\k{\kappa}
+
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\newcommand{\RN}[1]{\textup{\uppercase\expandafter{\romannumeral#1}}}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+\makeatletter
+\usepackage{mathtools}
+\newcases{mycases}{\quad}{%
+  \hfil$\m@th\displaystyle{##}$}{$\m@th\displaystyle{##}$\hfil}{\lbrace}{.}
+\makeatother
+
+\setlength{\droptitle}{-50pt}
+\title{\documenttitle}
+\author{Julian Panetta}
+
+% BEGIN DOCUMENT
+\begin{document}
+\maketitle
+
+\section{Optimization Framework}
+Optimizing our linkage structures is an interesting challenge, not only since simulating their deformations is already a highly nonlinear optimization problem in itself,
+but also because we care about (at least) two states of the structure: the flat assembly state and the curved deployed state.
+We want the flat state to be truly flat, the deployed state to produce a desired shape, and both states to experience reasonable stresses/elastic energy.
+Denoting our design parameters as a vector $\p$ and collecting our linkage
+state variables into a vector $\x$, we can pose the design problem as
+minimizing the objective:
+\begin{gather}
+\label{eqn:J}
+J(\p) = \frac{\gamma}{E_0} E(\xflat(\p), \p) + \frac{(1 - \gamma)}{E_0} E(\xdeploy(\p), \p) + \frac{\beta}{2 l_0^2} \norm{\xdeploy(\p) - \xtgt}_W^2, \\ \notag
+    \quad \quad \quad
+    \begin{aligned}
+        \xflat(\p) &\defeq \argmin_\x E(\x, \p) \\
+        \xdeploy(\p) &\defeq \argmin_{\substack{\x \\ \a \cdot \x = \alpha_\text{tgt}}} E(\x, \p)
+    \end{aligned} \quad
+    \begin{aligned}
+        \text{    (flat configuration state vars),}\phantom{\min_x E}&\\
+        \text{(deployed configuration state vars),}\phantom{\min_{\substack{x \\ x}} E}&
+    \end{aligned}
+\end{gather}
+subject to the constraint:
+\begin{equation}
+\label{eqn:c}
+c(\p) = \norm{S_z \xflat(\p)}^2 = 0.
+\end{equation}
+%
+Here $\gamma \in [0, 1]$ trades off between preferring low energy in the deployed or flat state, $\beta > 0$ controls how hard we try to fit the deployed structure's joints to
+user-provided target positions $\xtgt$, diagonal matrix $W$ holds user-provided weights summing to 1 that indicate how important fitting each individual joint is (only entries corresponding to joint position state variables are nonzero),
+and $E_0$ and $l_0$ are normalization constants (the initial deployed structure's energy and the length of its bounding box diagonal, respectively).
+Finally, $\a$ is a vector implementing the linear functional $\a^T\x = \frac{1}{N} \sum_i \alpha_i$ (i.e., averaging the opening angles), and
+$S_z$ is a matrix selecting the joints' $z$ coordinates from the full
+vector of state variables (this $\texttt{numJoint} \times \texttt{numDoF}$
+matrix has a single $1$ in each row and zeros everywhere else).
+
+Note that the deployed structure stores significantly more elastic energy than the flat structure, so adjusting $\gamma$ may not be fully intuitive; we may want to normalize
+each energy term separately. Also, we could chose to apply $c(\p) = 0$ as a soft constraint if having a completely flat assembly configuration is not so essential.
+
+\section{Applications}
+This minimization framework can be used to achieve several goals (though since
+it's a non-convex optimization, it's probably only appropriate for fairly
+small design modifications):
+
+\begin{enumerate}[label=(\alph*)]
+\item
+Improve an existing structure that produces
+a desirable shape but requires excessive forces to assemble/deploy or does
+not lie flat in its closed configuration. This is done by setting $\xtgt$ equal
+to the current deployed positions, setting $W$ equal to the identity, and tuning
+$\gamma$ and $\beta$.
+\item Support interactive design where the user drags the $\xtgt$ positions around
+and paints weights $W$.
+\item Fit to a known surface by periodically updating
+$\xtgt$ to be the projection of $\xdeploy$ onto the surface (local-global
+iteration). This gives another possible approach for interactive design: the
+user can apply smooth deformations to the target surface and rerun the
+surface-fitting optimization.
+\end{enumerate}
+
+\section{Gradients of the Objective and Constraints}
+To run gradient-based optimization, we need to compute derivatives of \pr{eqn:J} and \pr{eqn:c} efficiently:
+\begin{align} \notag
+\pder{J}{\p} &=
+     \frac{\gamma}{E_0} \left( \pder{E}{\x}(\xflat(\p), \p) \pder{\xflat}{\p} + \pder{E}{\p} (\xflat(\p), \p) \right) \\ \notag
+ & \quad + \frac{(1 - \gamma)}{E_0} \left( \pder{E}{\x}(\xdeploy(\p), \p) \pder{\xdeploy}{\p} + \pder{E}{\p} (\xdeploy(\p), \p) \right) \\ \notag
+ & \quad + \frac{\beta}{l_0^2} \Big(\xdeploy(\p) - \xtgt \Big)^T W \pder{\xdeploy}{\p} \\
+    \pder{c}{\p} &= \xflat(\p)^T S_z^T S_z \pder{\xflat}{\p}.
+    \label{eqn:grad_constraint}
+\end{align}
+First, we recall the local optimality conditions that determine $\xflat$ and $\xdeploy$:
+\begin{equation}
+\label{eqn:optimality}
+\pder{E}{\x}(\xflat(\p), \p) = 0, \quad \quad
+\pder{E}{\x}(\xdeploy(\p), \p) = \lambda \a^T, \quad \quad
+    \a^T \xdeploy(\p) = \alpha_\text{tgt}.
+\end{equation}
+From these, we see that $\pder{E}{\x}(\xflat(\p), \p)\pder{\xflat}{\p} = 0$ and $\pder{E}{\x}(\xdeploy(\p), \p) \pder{\xdeploy}{\p} = \lambda \a^T \pder{\xdeploy}{\p} = 0$,
+(as we would expect according to the envelope theorem). So the objective's gradient simplifies to:
+\begin{equation}
+\pder{J}{\p} =
+    \frac{\gamma}{E_0} \pder{E}{\p} (\xflat(\p), \p)
+  + \frac{(1 - \gamma)}{E_0} \pder{E}{\p} (\xdeploy(\p), \p)
+  + \frac{\beta}{l_0^2} \Big(\xdeploy(\p) - \xtgt \Big)^T W \pder{\xdeploy}{\p}.
+\label{eqn:grad_objective}
+\end{equation}
+However, we still must find $\pder{\xdeploy}{\p}$ and $\pder{\xflat}{\p}$ to evaluate the constraint gradient and the last term in the objective gradient.
+These are determined by differentiating the optimality conditions \pr{eqn:optimality}:
+\begin{align}
+    \label{eqn:flat_sensitivity}
+    &\spder{E}{\x}{\x}(\xflat(\p), \p) \pder{\xflat}{\p} + \spder{E}{\x}{\p}(\xflat(\p), \p) = 0\phantom{\a \pder{\lambda}{\p}}
+    \,  \Longrightarrow \,
+    H_\text{2D} \pder{\xflat}{\p} = -\spder{E}{\x}{\p}(\xflat(\p), \p), \\
+%
+    &\spder{E}{\x}{\x}(\xdeploy(\p), \p) \pder{\xdeploy}{\p} + \spder{E}{\x}{\p}(\xdeploy(\p), \p) = \a \pder{\lambda}{\p} \phantom{0}
+    \, \Longrightarrow \,
+    \begin{bmatrix} H_\text{3D} & \a \\ \a^T & 0 \end{bmatrix}\begin{bmatrix}\pder{\xdeploy}{\p} \\ \pder{\lambda}{\p} \end{bmatrix} = \begin{bmatrix} -\spder{E}{\x}{\p}(\xdeploy(\p), \p) \\ 0 \end{bmatrix},
+    \label{eqn:deploy_sensitivity}
+\end{align}
+where we defined $H_\text{2D}$ and $H_\text{3D}$ to be the Hessian of elastic energy with respect to state variables evaluated at $\xflat$ and $\xdeploy$, respectively. The last row of the equations for $\pder{\xdeploy}{\p}$
+comes from differentiating the constraint in \pr{eqn:optimality}.
+
+In principle, to compute each gradient component, we could solve \pr{eqn:flat_sensitivity},\pr{eqn:deploy_sensitivity} for the derivative of the equilibrium state variables with respect to the
+parameter in question, then plug these derivatives into \pr{eqn:grad_constraint} and \pr{eqn:grad_objective}.
+But this requires solving $2 \times \texttt{numParams}$ linear systems
+(albeit only two distinct system matrices). Instead, we can apply the adjoint method
+and solve only two systems for the adjoint state vectors $\y$ and $\w$:
+\begin{align*}
+    H_{\text{2D}} \y &= S_z^T S_z \xflat,
+\\
+    \begin{bmatrix} H_\text{3D} & \a \\ \a^T & 0 \end{bmatrix} \w &=
+    \begin{bmatrix}W  \Big(\xdeploy(\p) - \xtgt \Big) \\ 0\end{bmatrix}.
+\end{align*}
+%
+After finding these adjoint state vectors, we can compute our gradients with just some inner products:
+\begin{align*}
+\pder{J}{\p} &=
+    \frac{\gamma}{E_0} \pder{E}{\p} (\xflat(\p), \p)
+  + \frac{(1 - \gamma)}{E_0} \pder{E}{\p} (\xdeploy(\p), \p)
+  - \frac{\beta}{l_0^2} \w^T \begin{bmatrix} \spder{E}{\x}{\p}(\xdeploy(\p), \p) \\ 0 \end{bmatrix}, \\
+\pder{c}{\p} &= -\y^T \spder{E}{\x}{\p}(\xflat(\p), \p).
+\end{align*}
+\section{Optimizing}
+The gradient formulas above are all we need to run a BFGS-based optimization
+algorithm. For faster convergence, we might want to use Hessian information from the objective/constraints.
+Unfortunately, computing the full Hessian with respect to $\p$ is expensive (it will require solving
+several linear systems for each parameter, and no adjoint method-like trick can be used).
+However, Hessian-vector products can be computed efficiently (at a
+cost of four backsolves per Hessian application) as detailed in the next section. So we could use a Newton CG method as implemented in \texttt{Knitro}
+or \texttt{SciPy}.
+
+One concern that we have regardless of the chosen optimization algorithm is preventing the
+optimization from taking excessively large steps during its line search: large changes to the
+design parameters will slow down the equilibrium solves for $\xflat$ and $\xdeploy$.
+On the other hand, terminating the equilibrium solves early during the line search will compute
+an upper bound on the true energy. So a backtracking line search looking for a sufficient decrease will
+automatically shorten its step length if we are forced to terminate early at a bad configuration.
+
+\section{Hessian-vector Products}
+We now derive a formula for the objective and constraint Hessians applied to a particular step, $\delp$:
+\begin{align*}
+    &\begin{aligned}
+        \spder{J}{\p}{\p} \delp =
+        &\frac{\gamma}{E_0} \left(\spder{E}{\p}{\x} (\xflat(\p), \p) \delxflat + \spder{E}{\p}{\p}(\xflat(\p), \p) \delp\right) \\
+        + &\frac{(1 - \gamma)}{E_0} \left(\spder{E}{\p}{\x} (\xdeploy(\p), \p) \delxdeploy + \spder{E}{\p}{\p}(\xdeploy(\p), \p) \delp\right) \\
+        - &\frac{\beta}{l_0^2} \begin{bmatrix} \spder{E}{\p}{\x}(\xdeploy(\p), \p) \\ 0 \end{bmatrix} \delw 
+            - \frac{\beta}{l_0^2} \begin{bmatrix} \tpder{E}{\p}{\x}{\x}(\xdeploy(\p), \p) \delxdeploy +\tpder{E}{\p}{\x}{\p}(\xdeploy(\p), \p) \delp  \\ 0 \end{bmatrix} \w, 
+    \end{aligned} \\
+    &\begin{aligned}
+        \spder{c}{\p}{\p} \delp = -\spder{E}{\p}{\x}(\xflat(\p), \p)\dely - \left(\tpder{E}{\p}{\x}{\x}(\xflat(\p), \p) \delxflat + \tpder{E}{\p}{\x}{\p}(\xflat(\p), \p) \delp \right) \y.
+    \end{aligned}
+\end{align*}
+Evaluating this expression requires solving four linear systems for the state and adjoint state perturbations:
+\begin{align*}
+    H_\text{2D} \delxflat &= -\spder{E}{\x}{\p}(\xflat(\p), \p) \delp, \\
+    \begin{bmatrix} H_\text{3D} & \a \\ \a^T & 0 \end{bmatrix}\begin{bmatrix}\delxdeploy \\ \delta \lambda \end{bmatrix} &= \begin{bmatrix} -\spder{E}{\x}{\p}(\xdeploy(\p), \p) \delp \\ 0 \end{bmatrix}, \\
+        H_{\text{2D}} \dely &= S_z^T S_z \delxflat - \left(\tpder{E}{\x}{\x}{\x}(\xflat(\p), \p) \delxflat + \tpder{E}{\x}{\x}{\p}(\xflat(\p), \p) \delp\right) \y, \\
+    \begin{bmatrix} H_\text{3D} & \a \\ \a^T & 0 \end{bmatrix} \delw &=
+    \begin{bmatrix} W \delxdeploy \\ 0\end{bmatrix}
+        -
+    \begin{bmatrix}\left(\tpder{E}{\x}{\x}{\x}(\xdeploy(\p), \p) \delxdeploy + \tpder{E}{\x}{\x}{\p}(\xdeploy(\p), \p) \delp\right) \w \\ 0 \end{bmatrix}.
+\end{align*}
+The catch is that we need to compute the elastic energy Hessian's directional derivatives
+$\tpder{E}{\x}{\x}{\p} \delp$,
+$\tpder{E}{\p}{\x}{\x} \delta \x$ and
+$\tpder{E}{\x}{\x}{\x} \delta \x$. The first two are not so difficult since the
+Hessian's dependence on design parameters (rest lengths, elastic moduli) is relatively simple.
+However, computing $\tpder{E}{\x}{\x}{\x} \delta \x$ requires computing third derivatives of the
+elastic energy with respect to the elastic rod state variables, which is more involved. Thankfully,
+since we only need directional derivatives of the Hessian, we can calculate them efficiently with forward
+mode automatic differentiation (at roughly the cost of two additional Hessian evaluations).
+
+\section{Remarks}
+This formulation assumes no actuation forces are applied in the flat state and that a target angle is known.
+Because the flat state can easily self-collide/invert, we possibly will
+want bound constraints to keep the angles above some minimal value. Or maybe we want to apply a small actuation force
+tuned to keep the smallest angle positive. While these choices will complicate the solve for the flat equilibrium,
+at least they do not make the outer optimization proposed here any more difficult.
+
+We could replace the elastic energy terms in \pr{eqn:J} with some other
+function of the deformed configuration (e.g., an $L^p$ norm of bending stress to
+prevent bending from concentrating at a few points). This modification would mean
+the derivative of these terms is now sensitive to $\pder{\xflat}{\p}$ and $\pder{\xdeploy}{\p}$,
+but the increase in derivative evaluation time is negligible since we already needed to solve adjoint
+problems for the flatness constraint and fitting terms.
+
+We could also introduce a term explicitly trying to make the structure easier
+to actuate (some function of the actuation force $\lambda$ that is holding the
+deployed structure open). Note that \pr{eqn:deploy_sensitivity} computes the
+derivative of this actuation force, but our objective currently discards this
+information. However, if our design variables include the profile geometry,
+this will mostly just try to make the profile less stiff.
+
+Finally, it is not conceptually more difficult to improve the performance of the structure
+at multiple instants along the deployment path (not just the beginning and end). For instance,
+if we wish to minimize the energy at multiple states $\x_i(\p)$ along the path, we simply add terms
+$\pder{E}{\p}(\x_i(\p), \p)$ for each $\x_i$ to the objective gradient (recall the envelope theorem).
+However, this does involve solving/updating these intermediate equilibria at each evaluation of $J$.
+
+\end{document}

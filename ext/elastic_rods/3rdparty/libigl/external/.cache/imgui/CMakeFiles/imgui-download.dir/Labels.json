@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/imgui/CMakeFiles/imgui-download"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/imgui/CMakeFiles/imgui-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/imgui/CMakeFiles/imgui-download-complete.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/imgui/imgui-download-prefix/src/imgui-download-stamp/imgui-download-build.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/imgui/imgui-download-prefix/src/imgui-download-stamp/imgui-download-configure.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/imgui/imgui-download-prefix/src/imgui-download-stamp/imgui-download-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/imgui/imgui-download-prefix/src/imgui-download-stamp/imgui-download-install.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/imgui/imgui-download-prefix/src/imgui-download-stamp/imgui-download-mkdir.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/imgui/imgui-download-prefix/src/imgui-download-stamp/imgui-download-patch.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/imgui/imgui-download-prefix/src/imgui-download-stamp/imgui-download-test.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/imgui/imgui-download-prefix/src/imgui-download-stamp/imgui-download-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"imgui-download"
+		],
+		"name" : "imgui-download"
+	}
+}

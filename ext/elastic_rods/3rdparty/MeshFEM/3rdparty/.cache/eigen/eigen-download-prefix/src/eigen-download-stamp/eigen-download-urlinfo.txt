@@ -1,0 +1,12 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=url
+command=/usr/local/bin/cmake;-P;/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/eigen/eigen-download-prefix/src/eigen-download-stamp/download-eigen-download.cmake;COMMAND;/usr/local/bin/cmake;-P;/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/eigen/eigen-download-prefix/src/eigen-download-stamp/verify-eigen-download.cmake;COMMAND;/usr/local/bin/cmake;-P;/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/eigen/eigen-download-prefix/src/eigen-download-stamp/extract-eigen-download.cmake
+source_dir=/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/cmake/../3rdparty/eigen
+work_dir=/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/cmake/../3rdparty
+url(s)=https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.tar.gz
+hash=MD5=9e30f67e8531477de4117506fe44669b
+no_extract=
+

@@ -1,0 +1,12 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=url
+command=/usr/local/bin/cmake;-P;/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/download-optional-download.cmake;COMMAND;/usr/local/bin/cmake;-P;/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/verify-optional-download.cmake;COMMAND;/usr/local/bin/cmake;-P;/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/extract-optional-download.cmake
+source_dir=/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/cmake/../3rdparty/optional
+work_dir=/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/cmake/../3rdparty
+url(s)=https://github.com/martinmoene/optional-lite/archive/v3.0.0.tar.gz
+hash=MD5=a66541380c51c0d0a1e593cc2ca9fe8a
+no_extract=
+

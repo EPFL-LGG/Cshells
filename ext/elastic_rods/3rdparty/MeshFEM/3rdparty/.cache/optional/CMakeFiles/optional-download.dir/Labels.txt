@@ -1,0 +1,14 @@
+# Target labels
+ optional-download
+# Source files and their labels
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/CMakeFiles/optional-download
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/CMakeFiles/optional-download.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/CMakeFiles/optional-download-complete.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-build.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-configure.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-download.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-install.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-mkdir.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-patch.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-test.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/optional/optional-download-prefix/src/optional-download-stamp/optional-download-update.rule

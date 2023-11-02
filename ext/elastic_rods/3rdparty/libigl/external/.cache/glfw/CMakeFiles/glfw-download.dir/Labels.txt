@@ -1,0 +1,14 @@
+# Target labels
+ glfw-download
+# Source files and their labels
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/CMakeFiles/glfw-download
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/CMakeFiles/glfw-download.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/CMakeFiles/glfw-download-complete.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-build.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-configure.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-download.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-install.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-mkdir.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-patch.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-test.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glfw/glfw-download-prefix/src/glfw-download-stamp/glfw-download-update.rule

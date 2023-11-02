@@ -1,0 +1,14 @@
+# Target labels
+ libigl-imgui-download
+# Source files and their labels
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/libigl-imgui/CMakeFiles/libigl-imgui-download
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/libigl-imgui/CMakeFiles/libigl-imgui-download.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/libigl-imgui/CMakeFiles/libigl-imgui-download-complete.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/libigl-imgui/libigl-imgui-download-prefix/src/libigl-imgui-download-stamp/libigl-imgui-download-build.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/libigl-imgui/libigl-imgui-download-prefix/src/libigl-imgui-download-stamp/libigl-imgui-download-configure.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/libigl-imgui/libigl-imgui-download-prefix/src/libigl-imgui-download-stamp/libigl-imgui-download-download.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/libigl-imgui/libigl-imgui-download-prefix/src/libigl-imgui-download-stamp/libigl-imgui-download-install.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/libigl-imgui/libigl-imgui-download-prefix/src/libigl-imgui-download-stamp/libigl-imgui-download-mkdir.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/libigl-imgui/libigl-imgui-download-prefix/src/libigl-imgui-download-stamp/libigl-imgui-download-patch.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/libigl-imgui/libigl-imgui-download-prefix/src/libigl-imgui-download-stamp/libigl-imgui-download-test.rule
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/libigl-imgui/libigl-imgui-download-prefix/src/libigl-imgui-download-stamp/libigl-imgui-download-update.rule

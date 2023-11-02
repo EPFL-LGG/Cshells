@@ -1,0 +1,3 @@
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/eigen/CMakeFiles/eigen-download.dir
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/eigen/CMakeFiles/edit_cache.dir
+/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/eigen/CMakeFiles/rebuild_cache.dir

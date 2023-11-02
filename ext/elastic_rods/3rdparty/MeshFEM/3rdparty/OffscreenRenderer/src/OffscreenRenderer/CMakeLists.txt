@@ -1,0 +1,73 @@
+# Find all dependencies (but don't treat GLEW/OpenGL as required on Linux;
+# we want to simply disable `offscreen_renderer` with an error message if they
+# are not found--not prevent the build of any parent project that adds us.)
+if (NOT TARGET Eigen3::Eigen)
+    find_package(Eigen3 REQUIRED)
+endif()
+
+if (NOT TARGET GLEW::GLEW)
+    find_package(GLEW)
+endif()
+
+if (NOT USE_OSMESA)
+    if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        find_package(OpenGL REQUIRED)
+    else()
+        set(OpenGL_GL_PREFERENCE "GLVND") # Prefer modern GL driver, silencing cmake warning
+        find_package(OpenGL COMPONENTS OpenGL EGL)
+    endif()
+endif()
+if (NOT OPENGL_FOUND)
+    if (NOT USE_OSMESA)
+        message(WARNING "Falling back to OSMesa")
+    endif()
+    find_package(OSMesa)
+    message("WARNING: GLEW and OSMESA from Ubuntu seem incompatible (glewInit fails) with a 'Missing GL Version' error -- may need to build GLEW from scratch")
+endif()
+
+set(SHADER_PATH ${OFFSCREEN_RENDERER_ROOT}/shaders CACHE PATH "location of shader programs")
+
+if ((TARGET GLEW::GLEW) AND (OPENGL_FOUND OR (TARGET OSMesa::OSMesa)))
+    add_library(offscreen_renderer INTERFACE)
+    target_include_directories(offscreen_renderer INTERFACE ..)
+    target_link_libraries (offscreen_renderer INTERFACE Eigen3::Eigen GLEW::GLEW ${OPENGL_LIBRARIES})
+    if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm64")
+	    target_compile_options(offscreen_renderer INTERFACE -Wno-deprecated-declarations -ffast-math)
+    else()
+	    target_compile_options(offscreen_renderer INTERFACE -Wno-deprecated-declarations -march=native -ffast-math)
+    endif()
+
+    if (TARGET OSMesa::OSMesa)
+        target_compile_definitions(offscreen_renderer INTERFACE -DUSE_OSMESA)
+        target_link_libraries(offscreen_renderer INTERFACE OSMesa::OSMesa)
+    else()
+        if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+            # Default to CGL on Mac
+            target_compile_definitions(offscreen_renderer INTERFACE -DUSE_CGL)
+        else()
+            # Default to EGL on Linux
+            target_compile_definitions(offscreen_renderer INTERFACE -DUSE_EGL)
+            target_link_libraries(offscreen_renderer INTERFACE OpenGL::EGL)
+        endif()
+    endif()
+
+    if (NOT TARGET PNG::PNG)
+        find_package(PNG QUIET)
+        if (TARGET PNG::PNG)
+            target_link_libraries(offscreen_renderer INTERFACE PNG::PNG)
+            target_compile_definitions(offscreen_renderer INTERFACE "-DPNG_WRITER")
+        else()
+            message(WARNING "libpng not found; disabling png writer")
+        endif()
+    endif()
+
+    add_executable(demo demo.cc)
+    target_compile_definitions(demo PRIVATE "-DSHADER_PATH=\"${SHADER_PATH}\"")
+    target_link_libraries(demo offscreen_renderer)
+
+    add_executable(demo_multicontext demo_multicontext.cc)
+    target_compile_definitions(demo_multicontext PRIVATE "-DSHADER_PATH=\"${SHADER_PATH}\"")
+    target_link_libraries(demo_multicontext offscreen_renderer)
+else()
+    message(WARNING "offscreen_renderer disabled (missing dependencies)")
+endif()

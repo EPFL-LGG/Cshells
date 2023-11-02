@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/CMakeFiles/tinyexpr-download"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/CMakeFiles/tinyexpr-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/CMakeFiles/tinyexpr-download-complete.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/tinyexpr-download-prefix/src/tinyexpr-download-stamp/tinyexpr-download-build.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/tinyexpr-download-prefix/src/tinyexpr-download-stamp/tinyexpr-download-configure.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/tinyexpr-download-prefix/src/tinyexpr-download-stamp/tinyexpr-download-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/tinyexpr-download-prefix/src/tinyexpr-download-stamp/tinyexpr-download-install.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/tinyexpr-download-prefix/src/tinyexpr-download-stamp/tinyexpr-download-mkdir.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/tinyexpr-download-prefix/src/tinyexpr-download-stamp/tinyexpr-download-patch.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/tinyexpr-download-prefix/src/tinyexpr-download-stamp/tinyexpr-download-test.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/MeshFEM/3rdparty/.cache/tinyexpr/tinyexpr-download-prefix/src/tinyexpr-download-stamp/tinyexpr-download-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"tinyexpr-download"
+		],
+		"name" : "tinyexpr-download"
+	}
+}

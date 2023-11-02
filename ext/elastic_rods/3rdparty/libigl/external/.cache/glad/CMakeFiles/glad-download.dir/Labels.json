@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glad/CMakeFiles/glad-download"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glad/CMakeFiles/glad-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glad/CMakeFiles/glad-download-complete.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glad/glad-download-prefix/src/glad-download-stamp/glad-download-build.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glad/glad-download-prefix/src/glad-download-stamp/glad-download-configure.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glad/glad-download-prefix/src/glad-download-stamp/glad-download-download.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glad/glad-download-prefix/src/glad-download-stamp/glad-download-install.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glad/glad-download-prefix/src/glad-download-stamp/glad-download-mkdir.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glad/glad-download-prefix/src/glad-download-stamp/glad-download-patch.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glad/glad-download-prefix/src/glad-download-stamp/glad-download-test.rule"
+		},
+		{
+			"file" : "/home/qbeck/Research/Cshells/ext/elastic_rods/3rdparty/libigl/external/.cache/glad/glad-download-prefix/src/glad-download-stamp/glad-download-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"glad-download"
+		],
+		"name" : "glad-download"
+	}
+}
