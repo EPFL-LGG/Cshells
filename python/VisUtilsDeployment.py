@@ -215,7 +215,6 @@ def CompareDeploymentStatistics(listDeployments, listNames, colors=None, xlim=No
         filename        : the path to where we want to save the figure
         showText        : whether we show text or not
     '''
-    # stressList = depXShell["stresses"].keys()
     if vmOnly:
         stressList = ["Max von Mises Stress"]
     else:

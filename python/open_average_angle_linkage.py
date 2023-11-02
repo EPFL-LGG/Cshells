@@ -335,7 +335,7 @@ def GetFlattenedStressesFromLinkage(linkage):
 
 def RunAndAnalyzeDeployment(flatLinkage, deployedLinkage, numOpeningSteps=40, maxNewtonIterIntermediate=20, 
                             additionalFixedVars=None, releaseFixedVarsAngle=None, tsf=None, attractionWeight=None, jointPosWeight=None,
-                            saveIntermediate=False, rodEdgesFamily=None, pathToJsonFormat=None):
+                            saveIntermediate=False, rodEdgesFamily=None, pathToJsonFormat=None, view=None):
     '''Takes a flat linkage and run the deployment again so that we can record some values
 
     Args:
@@ -350,6 +350,7 @@ def RunAndAnalyzeDeployment(flatLinkage, deployedLinkage, numOpeningSteps=40, ma
         saveIntermediate          : whether we want to save intermediate json files for the geometry
         rodEdgesFamily            : the family for each rod segment
         pathToJsonFormat          : the path to the json files folder (can be formatted to welcome the opening step)
+        view                      : the view used to monitor the deployment
 
     Returns:
         dicOut : a dictionnary with various metrics
@@ -376,8 +377,6 @@ def RunAndAnalyzeDeployment(flatLinkage, deployedLinkage, numOpeningSteps=40, ma
     def equilibriumSolver(tgtAngle, l, opts, fv):
         opts.gradTol = 1.0e-6
         return average_angle_linkages.compute_equilibrium(l, tgtAngle, options=opts, fixedVars=fv)
-    
-    openView = None
 
     if not openLinkage.hasCrossSectionMesh(): 
         if not openLinkage.hasCrossSection():
@@ -391,12 +390,17 @@ def RunAndAnalyzeDeployment(flatLinkage, deployedLinkage, numOpeningSteps=40, ma
         openLinkage.meshCrossSection(0.001)
         openLinkage.setMaterial(openLinkage.homogenousMaterial())
         
+    if view is not None:
+        view.update(mesh=openLinkage)
+        
     with so(): 
-        lstOut = open_average_angle_linkage(openLinkage, driver, alphaTar - openLinkage.getAverageActuatedJointsAngle(), numOpeningSteps, 
-                                openView, equilibriumSolver=equilibriumSolver, additionalFixedVars=additionalFixedVars, 
-                                releaseFixedVarsAngle=releaseFixedVarsAngle,
-                                saveIntermediate=saveIntermediate, rodEdgesFamily=rodEdgesFamily, tsf=tsf, pathToJsonFormat=pathToJsonFormat,
-                                maxNewtonIterationsIntermediate=maxNewtonIterIntermediate, computeModes=True)
+        lstOut = open_average_angle_linkage(
+            openLinkage, driver, alphaTar - openLinkage.getAverageActuatedJointsAngle(), numOpeningSteps, 
+            view, equilibriumSolver=equilibriumSolver, additionalFixedVars=additionalFixedVars, 
+            releaseFixedVarsAngle=releaseFixedVarsAngle,
+            saveIntermediate=saveIntermediate, rodEdgesFamily=rodEdgesFamily, tsf=tsf, pathToJsonFormat=pathToJsonFormat,
+            maxNewtonIterationsIntermediate=maxNewtonIterIntermediate, computeModes=True
+        )
         
     dicOut = {}
     dicOut["ConvergenceReports"] = lstOut[0]

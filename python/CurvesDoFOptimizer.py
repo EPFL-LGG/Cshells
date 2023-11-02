@@ -3,7 +3,7 @@ import math
 import numpy as np
 import torch
 
-from InitializationOptimizers import QuadsTriangulationsSignedAreas
+from PlanarizationOptimizers import QuadsTriangulationsSignedAreas
 from VisUtils import CShellOptimizationCallback
 
 torch.set_default_dtype(torch.float64)
@@ -394,14 +394,16 @@ class CurvesDoFOptimizer():
             KN_set_cb_hess(kc, cb, hessIndexVars1=KN_DENSE_ROWMAJOR, hessCallback=self.callbackEvalHV)
         
         # Set the new point callback
-        cocb = CShellOptimizationCallback(self.cshell, updateColor=True, full=True,
-                                          applyAngleConstraint=self.applyAngleConstraint, 
-                                          applyFlatnessConstraint=False,
-                                          computeGradMags=computeGradMags,
-                                          screenshot=screenshot,
-                                          visDeviations=visDeviations, 
-                                          saveGeometryPath=saveGeometryPath, 
-                                          saveGeometryFrequency=saveGeometryFrequency)
+        cocb = CShellOptimizationCallback(
+            self.cshell, updateColor=True, full=True,
+            applyAngleConstraint=self.applyAngleConstraint, 
+            applyFlatnessConstraint=False,
+            computeGradMags=computeGradMags,
+            screenshot=screenshot,
+            visDeviations=visDeviations, 
+            saveGeometryPath=saveGeometryPath, 
+            saveGeometryFrequency=saveGeometryFrequency
+        )
         cocb.SetTurnOnCB(useCB)
         self.cshell.SetOptimizationCallback(cocb)
         KN_set_newpt_callback(kc, self.newPtCallback, userParams=None)

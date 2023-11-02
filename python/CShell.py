@@ -15,7 +15,7 @@ import numpy as np
 from scipy.interpolate import CubicSpline
 import torch
 from torchcubicspline import (natural_cubic_spline_coeffs, NaturalCubicSpline)
-from torch.autograd.functional import jvp, jacobian
+from torch.autograd.functional import jvp
 from torch.autograd import grad
 
 from LaplacianSmoothing import ComputeLaplacianCP, LeastSquaresLaplacian, LeastSquaresLaplacianFullGradient, LeastSquaresLaplacianFullHVP
@@ -105,13 +105,6 @@ class CShell:
         featJoints                : list storing the joints for which the weights have been modified in the target surface fitting term
         linkageOptimizer          : a CShellOptimization object
         optimizationCallback      : the object that collects the objective value, time, and gradient magnitude on the parameters
-        jacCurDoFToDP             : the Jacobian from curve DoF to design parameters
-        jacDPToDepDoF             : the Jacobian from design parameters to deployed DoF
-        jacFull                   : the Jacobian from curves DoF to deployed DoF
-        jacFullPos2D              : the Jacobian from the design parameters to the positional DoF for 2D
-        jacFullPos3D              : the Jacobian from the design parameters to the positional DoF for 3D
-        jacFullJoints2D           : the Jacobian from the design parameters to the joints positions for 2D
-        jacFullJoints3D           : the Jacobian from the design parameters to the joints positions for 3D
         numOpeningSteps           : number of opening steps for deploying the linkage
         maxNewtonIterIntermediate : maximum number of iterations per opening step
         
@@ -261,20 +254,10 @@ class CShell:
                 "gamma": 0.0,
                 "smoothingWeight": 1.0,
                 "rlRegWeight": 1.0,
-                "contactForceWeight": 0.0,
                 "cpRegWeight": 1.0
             }
         else:
             self.dictWeights = dictWeights
-        
-        # Store the Jacobians
-        self.jacCurDoFToDP   = [None, False]
-        self.jacDPToDepDoF   = [None, False]
-        self.jacFull         = [None, False]
-        self.jacFullJoints2D = [None, False]
-        self.jacFullJoints3D = [None, False]
-        self.jacFullPos2D    = [None, False]
-        self.jacFullPos3D    = [None, False]
         
         if (not self.flatOnly):
             # Create the linkage optimizer
@@ -306,13 +289,6 @@ class CShell:
         '''
 
         if torch.linalg.norm(self.curvesDoF - curvesDoF) < 1.0e-16 and not force:
-            if (abs(alpha - self.alphaTar) > 1.0e-16):
-                self.jacDPToDepDoF[1]   = False
-                self.jacFull[1]         = False
-                self.jacFullJoints2D[1] = False
-                self.jacFullJoints3D[1] = False
-                self.jacFullPos2D[1]    = False
-                self.jacFullPos3D[1]    = False
             if not torch.is_tensor(self.alphaTar):
                 self.alphaTar = torch.tensor(alpha)
             else:
@@ -331,15 +307,6 @@ class CShell:
                     self.MakeLinkageOptimizer()
                 else:
                     self.UpdateLinkageOptimizer(commitLinesearchLinkage=commitLinesearchLinkage)
-
-            # The Jacobians should be recomputed
-            self.jacCurDoFToDP[1]   = False
-            self.jacDPToDepDoF[1]   = False
-            self.jacFull[1]         = False
-            self.jacFullJoints2D[1] = False
-            self.jacFullJoints3D[1] = False
-            self.jacFullPos2D[1]    = False
-            self.jacFullPos3D[1]    = False
 
         if resetCPFixed:
             self.ResetFixedCPPosition()
@@ -547,8 +514,11 @@ class CShell:
                             "targetJP": self.deployedLinkage.getTargetJointsPosition(),
                         }
                     if isinstance(self.flatLinkage, average_angle_linkages.AverageAngleLinkage):
-                        self.flatLinkage = average_angle_linkages.AverageAngleSurfaceAttractedLinkage(self.attractionMesh["V"], self.attractionMesh["F"], False, self.flatLinkage, free_joint_angles=self.freeAngles)
-                        self.flatLinkage.attraction_weight = 0.
+                        self.flatLinkage = average_angle_linkages.AverageAngleSurfaceAttractedLinkage(
+                            self.attractionMesh["V"], self.attractionMesh["F"], False, 
+                            self.flatLinkage, free_joint_angles=self.freeAngles
+                        )
+                        self.flatLinkage.attraction_weight = 0.0
                 fixedDepVars.append(idxAverageAngleDep)
 
                 angleDeviation = abs(self.alphaTar.item() - self.deployedLinkage.getDoFs()[idxAverageAngleDep])
@@ -557,7 +527,6 @@ class CShell:
                     dof[idxAverageAngleDep] = self.alphaTar.item()
                     print("Target angle: ", self.alphaTar.item())
                     self.deployedLinkage.setDoFs(dof)
-                    # raise ValueError("ERROR: the deployed average angle has a deviation of {:.2e} from the one specified to the Cshell constructor!".format(angleDeviation))
                 
                 maxFlat = np.max(abs(self.flatLinkage.getDesignParameters() - ToNumpy(self.designParameters)))
                 if maxFlat > 1.0e-10:
@@ -565,13 +534,11 @@ class CShell:
                     print(self.flatLinkage.getDesignParameters() - ToNumpy(self.designParameters))
                     print("WARNING: the design parameters differ for the flat linkage by a deviation of {:.2e}!".format(maxFlat))
                     self.flatLinkage.setDesignParameters(ToNumpy(self.designParameters))
-                    # raise ValueError("WARNING: the design parameters differ for the flat linkage by a deviation of {:.2e}!".format(maxFlat))
 
                 maxDep = np.max(abs(self.deployedLinkage.getDesignParameters() - ToNumpy(self.designParameters)))
                 if maxDep > 1.0e-10:
                     self.deployedLinkage.setDesignParameters(ToNumpy(self.designParameters))
                     print("WARNING: the design parameters differ for the deployed linkage by a deviation of {:.2e}!".format(maxDep))
-                    # raise ValueError("WARNING: the design parameters differ for the deployed linkage by a deviation of {:.2e}!".format(maxDep))
 
                 # Compute the deployed equilibrium
                 self.deployedLinkage.setMaterial(self.rodMaterial)
@@ -594,9 +561,11 @@ class CShell:
         inputJointNormals[:, :2] = 0.0
 
         # Create the flat linkage and open it
-        flatRodLinkage = elastic_rods.RodLinkage(jointsPosition, self.rodEdges, 
-                                                 edge_callbacks=self.segmentSplines, input_joint_normals=inputJointNormals,
-                                                 rod_interleaving_type=elastic_rods.InterleavingType.xshell, subdivision=self.subdivision)
+        flatRodLinkage = elastic_rods.RodLinkage(
+            jointsPosition, self.rodEdges, 
+            edge_callbacks=self.segmentSplines, input_joint_normals=inputJointNormals,
+            rod_interleaving_type=elastic_rods.InterleavingType.xshell, subdivision=self.subdivision
+        )
         self.flatLinkage = average_angle_linkages.AverageAngleLinkage(flatRodLinkage, free_joint_angles=self.freeAngles)
         self.flatLinkage.setDesignParameters(ToNumpy(self.designParameters))
         driver = self.flatLinkage.centralJoint()
@@ -616,15 +585,27 @@ class CShell:
                 # Prioritize self.attractionMesh over self.pathSurf
                 # The second argument is useCenterline
                 if not self.attractionMesh is None:
-                    self.flatLinkage     = average_angle_linkages.AverageAngleSurfaceAttractedLinkage(self.attractionMesh["V"], self.attractionMesh["F"], False, self.flatLinkage, free_joint_angles=self.freeAngles)
-                    self.deployedLinkage = average_angle_linkages.AverageAngleSurfaceAttractedLinkage(self.attractionMesh["V"], self.attractionMesh["F"], False, self.flatLinkage, free_joint_angles=self.freeAngles)
+                    self.flatLinkage     = average_angle_linkages.AverageAngleSurfaceAttractedLinkage(
+                        self.attractionMesh["V"], self.attractionMesh["F"], False, 
+                        self.flatLinkage, free_joint_angles=self.freeAngles
+                    )
+                    self.deployedLinkage = average_angle_linkages.AverageAngleSurfaceAttractedLinkage(
+                        self.attractionMesh["V"], self.attractionMesh["F"], False, 
+                        self.flatLinkage, free_joint_angles=self.freeAngles
+                    )
                 elif not self.pathSurf is None:
-                    self.flatLinkage     = average_angle_linkages.AverageAngleSurfaceAttractedLinkage(self.pathSurf, False, self.flatLinkage, free_joint_angles=self.freeAngles)
-                    self.deployedLinkage = average_angle_linkages.AverageAngleSurfaceAttractedLinkage(self.pathSurf, False, self.flatLinkage, free_joint_angles=self.freeAngles)
+                    self.flatLinkage     = average_angle_linkages.AverageAngleSurfaceAttractedLinkage(
+                        self.pathSurf, False, 
+                        self.flatLinkage, free_joint_angles=self.freeAngles
+                    )
+                    self.deployedLinkage = average_angle_linkages.AverageAngleSurfaceAttractedLinkage(
+                        self.pathSurf, False, 
+                        self.flatLinkage, free_joint_angles=self.freeAngles
+                    )
                 else:
                     raise ValueError("The variable self.useSAL should be set to False if both self.attractionMesh and self.pathSurf are None.")
                 self.flatLinkage.attraction_weight     = 0.0
-                self.deployedLinkage.attraction_weight = self.attractionWeight # 1.0e-5, 1.0e3
+                self.deployedLinkage.attraction_weight = self.attractionWeight
                 self.deployedLinkage.set_holdClosestPointsFixed(False)
                 if "targetJP" in self.attractionMesh.keys():
                     assert self.attractionMesh["targetJP"].shape[0] == 3 * self.nJ
@@ -643,9 +624,11 @@ class CShell:
                 opts.gradTol = 1.0e-5
                 return average_angle_linkages.compute_equilibrium(l, tgtAngle, options=opts, fixedVars=fv)
 
-            with so(): open_average_angle_linkage(self.deployedLinkage, driver, self.alphaTar.item() - self.deployedLinkage.averageJointAngle, 
-                                                  self.numOpeningSteps, self.deployedView, equilibriumSolver=equilibriumSolver, 
-                                                  maxNewtonIterationsIntermediate=self.maxNewtonIterIntermediate)
+            with so(): open_average_angle_linkage(
+                self.deployedLinkage, driver, self.alphaTar.item() - self.deployedLinkage.averageJointAngle, 
+                self.numOpeningSteps, self.deployedView, equilibriumSolver=equilibriumSolver, 
+                maxNewtonIterationsIntermediate=self.maxNewtonIterIntermediate
+            )
             if self.createViewers: self.deployedView = LinkageViewer(self.deployedLinkage, width=768, height=480)
 
 
@@ -660,13 +643,17 @@ class CShell:
         '''
 
         if self.useSAL:
-            self.linkageOptimizer = cshell_optimization.AverageAngleCShellOptimizationSAL(self.flatLinkage, self.deployedLinkage, self.newtonOptimizerOptions, 
-                                                                                          minAngleConstraint=0., allowFlatActuation=False,
-                                                                                          optimizeTargetAngle=self.optimizeAlpha, fixDeployedVars=not self.useSAL)
+            self.linkageOptimizer = cshell_optimization.AverageAngleCShellOptimizationSAL(
+                self.flatLinkage, self.deployedLinkage, self.newtonOptimizerOptions, 
+                minAngleConstraint=0.0, allowFlatActuation=False,
+                optimizeTargetAngle=self.optimizeAlpha, fixDeployedVars=not self.useSAL
+            )
         else:
-            self.linkageOptimizer = cshell_optimization.AverageAngleCShellOptimization(self.flatLinkage, self.deployedLinkage, self.newtonOptimizerOptions,
-                                                                                       minAngleConstraint=0., allowFlatActuation=False,
-                                                                                       optimizeTargetAngle=self.optimizeAlpha, fixDeployedVars=not self.useSAL)
+            self.linkageOptimizer = cshell_optimization.AverageAngleCShellOptimization(
+                self.flatLinkage, self.deployedLinkage, self.newtonOptimizerOptions,
+                minAngleConstraint=0.0, allowFlatActuation=False,
+                optimizeTargetAngle=self.optimizeAlpha, fixDeployedVars=not self.useSAL
+            )
 
         self.linkageOptimizer.setTargetAngle(self.alphaTar)
 
@@ -1056,37 +1043,6 @@ class CShell:
             gradCurvesDof[-1] = dDesignParameters[-1]
 
         return gradCurvesDof
-    
-    def VJPDesignParametersToCurvesDoF(self, jacDesignParameters):
-        '''
-        Args:
-            jacDesignParameters : torch tensor containing the jacobian with respect to the design parameters of the discretized linkage (?, nDP)
-
-        Returns:
-            jacCurveDoFs : torch tensor containing the jacobian with respect to the curves DoFs (?, nCurvesDoF)
-        '''
-
-        jacCurveDoFs = torch.zeros(size=(jacDesignParameters.shape[0], self.GetNumDoF()))
-
-        self.CleanGradients()
-        currCurvesDoF = self.curvesDoF
-        
-        def MapCurvesDoFToDP(curvesDoF):
-            self.curvesDoF = curvesDoF
-            # Go through operations
-            self.FullCurvesDoFToControlPointsMap()
-            self.ControlPointsToDiscretePositionsMap()
-            self.DiscretePositionsToDesignParametersMap()
-            return self.designParameters
-        
-        vjpFun = torch.vmap(torch.func.vjp(MapCurvesDoFToDP, currCurvesDoF)[1], in_dims=(0,))
-        jacCurveDoFs[:, :self.curvesDoF.shape[0]] = vjpFun(jacDesignParameters[:, :self.designParameters.shape[0]])[0]
-        self.CleanGradients()
-
-        if self.optimizeAlpha:
-            jacCurveDoFs[:, -1] = jacDesignParameters[:, -1]
-
-        return jacCurveDoFs
 
     def PushCurvesDoFToDesignParameters(self, dCurvesDoF):
         '''
@@ -1161,177 +1117,6 @@ class CShell:
 
         return dControlPoints
 
-    def PullRestQuantitiesToControlPoints(self, dDesignParameters):
-        '''
-        Args:
-            dDesignParameters : torch tensor containing the differential of the design parameters of the discretized linkage
-        
-        Returns:
-            gradControlPoints : torch tensor containing the pullback of dDesignParameters
-        '''
-
-        self.CleanGradients()
-        
-        # Go through operations
-        self.controlPoints.requires_grad = True
-        self.ControlPointsToDiscretePositionsMap()
-        self.DiscretePositionsToDesignParametersMap()
-        self.designParameters.backward(dDesignParameters[:self.designParameters.shape[0]])
-
-        gradControlPoints = self.controlPoints.grad
-        self.CleanGradients()
-
-        return gradControlPoints
-
-    def PushControlPointsToDesignParameters(self, dControlPoints):
-        '''
-        Args:
-            dControlPoints  : torch tensor of shape containing the differential of the control points
-        
-        Returns:
-            dDesignParameters : torch tensor containing the pushforward of dCurveDoFs
-        '''
-
-        dDesignParameters = torch.zeros(size=(self.designParameters.shape[0] + self.optimizeAlpha,))
-
-        def pipeline(cp):
-            self.controlPoints = cp
-            self.ControlPointsToDiscretePositionsMap()
-            self.DiscretePositionsToDesignParametersMap()
-            return self.designParameters
-
-        _, dDesignParametersPartial = jvp(pipeline, self.controlPoints, v=dControlPoints)
-
-        dDesignParameters[:self.designParameters.shape[0]] = dDesignParametersPartial
-
-        return dDesignParameters
-
-    def PushCurvesDoFToDeployedDoF(self, dCurvesDoF):
-        '''
-        Args:
-            dCurvesDoF : torch tensor of size (2*nJ + nIntCP,) containing the modifications to be pushed
-        
-        Returns:
-            dDeployedDoF : torch tensor containing the pushforward of dCurveDoFs
-        '''
-        if not KNITRO_FOUND:
-            print("Knitro has not been found.")
-            raise ModuleNotFoundError
-
-        dDesignParameters = ToNumpy(self.PushCurvesDoFToDesignParameters(dCurvesDoF))
-        dDeployedDoF = self.linkageOptimizer.pushforward(self.linkageOptimizer.getFullDesignParameters(), dDesignParameters)
-
-        return torch.tensor(dDeployedDoF)
-
-    def MakeJacobianCurveDoFToDP(self, vectorize=True):
-        '''
-        Args:
-            vectorize : whether we vectorize the jacobian computation (still experimental when code has beem written)
-
-        Updated attributes:
-            jacCurDoFToDP : the jacobian from curve DoF to design parameters
-        '''
-
-        jacCurDoFToDP = torch.zeros(size=(self.designParameters.shape[0] + self.optimizeAlpha, self.GetNumDoF()))
-
-        def pipeline(dof):
-            '''
-            This also changes the whole Cshell object!
-            '''
-            self.curvesDoF = dof
-            self.FullCurvesDoFToControlPointsMap()
-            self.ControlPointsToDiscretePositionsMap()
-            self.DiscretePositionsToDesignParametersMap()
-            return self.designParameters
-
-        jacCurDoFToDP[:self.designParameters.shape[0], :self.curvesDoF.shape[0]] = jacobian(pipeline, self.curvesDoF, vectorize=vectorize)
-        jacCurDoFToDP[-1, -1] = 1.
-
-        self.jacCurDoFToDP = [jacCurDoFToDP, True]
-
-    def MakeJacobianDPToDoF(self):
-        '''
-        Updated attributes:
-            jacDPToDoF : the jacobian from design parameters to all DoF (first nDoF rows for 2D)
-        '''
-        if not KNITRO_FOUND:
-            print("Knitro has not been found.")
-            raise ModuleNotFoundError
-
-        if self.jacDPToDepDoF[1]: return
-
-        jacDPToDoF = torch.zeros(size=(2 * self.deployedLinkage.numDoF(), self.linkageOptimizer.getFullDesignParameters().shape[0]))
-        for i, ei in enumerate(np.eye(self.linkageOptimizer.getFullDesignParameters().shape[0])):
-            jacDPToDoF[:, i] = torch.tensor(self.linkageOptimizer.pushforward(self.linkageOptimizer.getFullDesignParameters(), ei))
-
-        self.jacDPToDepDoF = [jacDPToDoF, True]
-
-    def MakeFullJacobian(self):
-        '''
-        Updated attributes:
-            jacFull : the jacobian from design parameters to DoF (first nDoF rows for 2D)
-        '''
-
-        if not KNITRO_FOUND:
-            print("Knitro has not been found.")
-            raise ModuleNotFoundError
-
-        if self.jacFull[1]: return
-
-        if not self.jacCurDoFToDP[1]:
-            self.MakeJacobianCurveDoFToDP()
-        if not self.jacDPToDepDoF[1]:
-            self.MakeJacobianDPToDoF()
-        
-        self.jacFull = [self.jacDPToDepDoF[0] @ self.jacCurDoFToDP[0], True]
-
-    def MakeFullJacobianToPositions(self):
-        '''
-        Updated attributes:
-            jacFullPos2D : the jacobian from the design parameters to the positional DoF for 2D
-            jacFullPos3D : the jacobian from the design parameters to the positional DoF for 3D
-        '''
-
-        if not KNITRO_FOUND:
-            print("Knitro has not been found.")
-            raise ModuleNotFoundError
-
-        if not self.jacFull[1]:
-            self.MakeFullJacobian()
-
-        if self.jacFullPos2D[1] and self.jacFullPos3D[1]: return
-
-        idxDiscPosFlat = IndicesDiscretePositionsNoDuplicate(self.deployedLinkage, self.rodEdges, self.subdivision)
-
-        jacFull2D = self.jacFull[0][:self.deployedLinkage.numDoF()]
-        self.jacFullPos2D = [jacFull2D[idxDiscPosFlat, :], True]
-
-        jacFull3D = self.jacFull[0][self.deployedLinkage.numDoF():]
-        self.jacFullPos3D = [jacFull3D[idxDiscPosFlat, :], True]
-
-    def MakeFullJacobianToJoints(self):
-        '''
-        Updated attributes:
-            jacFullJoints2D : the jacobian from the design parameters to the joints positions for 2D
-            jacFullJoints3D : the jacobian from the design parameters to the joints positions for 3D
-        '''
-
-        if not KNITRO_FOUND:
-            print("Knitro has not been found.")
-            raise ModuleNotFoundError
-
-        if not self.jacFull[1]:
-            self.MakeFullJacobian()
-
-        if self.jacFullJoints2D[1] and self.jacFullJoints3D[1]: return
-
-        idxJointPos= self.deployedLinkage.jointPositionDoFIndices()
-
-        jacFull2D = self.jacFull[0][:self.deployedLinkage.numDoF()]
-        self.jacFullJoints2D = [jacFull2D[idxJointPos, :], True]
-
-        jacFull3D = self.jacFull[0][self.deployedLinkage.numDoF():]
-        self.jacFullJoints3D = [jacFull3D[idxJointPos, :], True]
 
     
     #############################################
@@ -1345,7 +1130,7 @@ class CShell:
         '''
         self.CleanGradients()
         objective = torch.tensor(self.linkageOptimizer.J(ToNumpy(self.GetFullDP())))
-        if self.cpRegWeight != 0.:
+        if self.cpRegWeight != 0.0:
             objective += self.cpRegWeight * LeastSquaresLaplacian(self.controlPoints, self.controlPointsFixed, self.lapCP)
 
         return objective
@@ -1360,13 +1145,9 @@ class CShell:
             raise ModuleNotFoundError
 
         gradObjDP = torch.tensor(self.linkageOptimizer.gradp_J(ToNumpy(self.GetFullDP())))
+        grad = self.PullDesignParametersToCurvesDoF(gradObjDP)
 
-        if self.jacFull[1]:
-            grad =  gradObjDP @ self.jacFull[0]
-        else:
-            grad = self.PullDesignParametersToCurvesDoF(gradObjDP)
-
-        if self.cpRegWeight != 0.:
+        if self.cpRegWeight != 0.0:
             gradCP = self.cpRegWeight * LeastSquaresLaplacianFullGradient(self.controlPoints, self.controlPointsFixed, self.lapCP)
             grad  += self.PullControlPointsToCurvesDoF(gradCP)
 
@@ -1438,18 +1219,16 @@ class CShell:
         self.linkageOptimizer.gamma                    = self.dictWeights["gamma"]
         self.linkageOptimizer.smoothing_weight         = self.dictWeights["smoothingWeight"]
         self.linkageOptimizer.rl_regularization_weight = self.dictWeights["rlRegWeight"]
-        self.linkageOptimizer.contact_force_weight     = self.dictWeights["contactForceWeight"]
         self.cpRegWeight                               = self.dictWeights["cpRegWeight"] / (self.linkageOptimizer.get_l0() ** 2)
 
         self.linkageOptimizer.invalidateAdjointState()
 
-    def SetWeights(self, beta, gamma, smoothingWeight, rlRegWeight, cpRegWeight, contactForceWeight=0):
+    def SetWeights(self, beta, gamma, smoothingWeight, rlRegWeight, cpRegWeight):
         self.dictWeights = {
             "beta": beta,
             "gamma": gamma,
             "smoothingWeight": smoothingWeight,
             "rlRegWeight": rlRegWeight,
-            "contactForceWeight": contactForceWeight,
             "cpRegWeight" : cpRegWeight
         }
         self.ApplyWeights()
@@ -1474,7 +1253,7 @@ class CShell:
         self.featJoints = addFeatJoints + [idx for idx in range(self.valence.shape[0]) if self.valence[idx] == 2]
         self.linkageOptimizer.scaleJointWeights(jointPosWeight, featureMultiplier=featureMultiplier, additional_feature_pts=addFeatJoints)
 
-    def OptimizeDesignParameters(self, nSteps=100, trustRegionScale=1.0, optTol=1e-2, useCG=True, 
+    def OptimizeDesignParameters(self, nSteps=100, trustRegionScale=1.0, optTol=1.0e-2, useCG=True, 
                                  applyAngleConstraint=True, applyFlatnessConstraint=True,
                                  resetCB=True, turnOnCB=False):
         '''
@@ -1532,12 +1311,11 @@ class CShell:
             grad : the corresponding gradient, a torch tensor of shape (nCurvesDoF,)
         '''
 
-        self.linkageOptimizer.beta = 0
-        self.linkageOptimizer.gamma = 0
-        self.linkageOptimizer.smoothing_weight = 0
-        self.linkageOptimizer.rl_regularization_weight = 0
-        self.linkageOptimizer.contact_force_weight = 0
-        self.cpRegWeight = 0
+        self.linkageOptimizer.beta = 0.0
+        self.linkageOptimizer.gamma = 0.0
+        self.linkageOptimizer.smoothing_weight = 0.0
+        self.linkageOptimizer.rl_regularization_weight = 0.0
+        self.cpRegWeight = 0.0
         useGradp = False
         if currType == linkage_optimization.OptEnergyType.Full:
             useGradp = True
@@ -1557,9 +1335,6 @@ class CShell:
         elif currType == linkage_optimization.OptEnergyType.ElasticDeployed:
             useGradp = True
             self.linkageOptimizer.gamma = self.dictWeights["gamma"]
-        elif currType == linkage_optimization.OptEnergyType.ContactForce:
-            useGradp = True
-            self.linkageOptimizer.contact_force_weight = self.dictWeights["contactForceWeight"]
 
         if useGradp:
             self.linkageOptimizer.invalidateAdjointState()
@@ -1579,37 +1354,6 @@ class CShell:
         self.ApplyWeights()
 
         return grad
-
-    def GetDissimilarityWithGradients(self, dirsCurvesDoF):
-        '''
-        Args:
-            dirsCurvesDoF : torch tensor of size (?, nCurvesDoF) giving directions to compare with gradients
-
-        Returns:
-            dissims     : dictionnary of tensors of shape (?,) containing the dissimilarity for each term
-            listDissims : list of dictionnaries containing the dissimilarity for each directions, for each term in the objective
-        '''
-        dictTerms = {
-            "TargetFitting": linkage_optimization.OptEnergyType.Target,
-            "RestCurvatureSmoothing": linkage_optimization.OptEnergyType.Smoothing,
-            "RestLengthMinimization": linkage_optimization.OptEnergyType.Regularization,
-            "ElasticEnergyFlat": linkage_optimization.OptEnergyType.ElasticBase,
-            "ElasticEnergyDeployed": linkage_optimization.OptEnergyType.ElasticDeployed,
-            "LaplacianCP": "LaplacianCP"
-        }
-
-        dissims = {}
-        dirsNormed = dirsCurvesDoF / (torch.linalg.norm(dirsCurvesDoF, dim=1, keepdims=True) + 1e-14)
-
-        for key in dictTerms:
-            grad = self.GetGradientTerm(dictTerms[key], True)
-            gradNorm = torch.linalg.norm(grad)
-            
-            dissims[key] = - dirsNormed @ grad / (gradNorm + 1e-14)
-
-        listDissims = [{key: dissims[key][i].item() for key in dissims}for i in range(dirsCurvesDoF.shape[0])]
-
-        return dissims, listDissims
 
     def PlotCurveLinkage(self, resetLims=False):
         '''

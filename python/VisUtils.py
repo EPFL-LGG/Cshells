@@ -920,19 +920,16 @@ def get_component_gradient_norm(optimizer, currType, cshell, full):
     save_gamma = optimizer.gamma
     save_smoothing_weight = optimizer.smoothing_weight
     save_rl_regularization_weight = optimizer.rl_regularization_weight
-    save_contact_force_weight = optimizer.contact_force_weight
 
-    optimizer.beta = 0
-    optimizer.gamma = 0
-    optimizer.smoothing_weight = 0
-    optimizer.rl_regularization_weight = 0
-    optimizer.contact_force_weight = 0
+    optimizer.beta = 0.0
+    optimizer.gamma = 0.0
+    optimizer.smoothing_weight = 0.0
+    optimizer.rl_regularization_weight = 0.0
     if currType == linkage_optimization.OptEnergyType.Full:
         optimizer.beta = save_beta
         optimizer.gamma = save_gamma
         optimizer.smoothing_weight = save_smoothing_weight
         optimizer.rl_regularization_weight = save_rl_regularization_weight
-        optimizer.contact_force_weight = save_contact_force_weight
     elif currType == linkage_optimization.OptEnergyType.Target:
         optimizer.beta = save_beta
     elif currType == linkage_optimization.OptEnergyType.Smoothing:
@@ -943,8 +940,6 @@ def get_component_gradient_norm(optimizer, currType, cshell, full):
         optimizer.gamma = save_gamma
     elif currType == linkage_optimization.OptEnergyType.ElasticDeployed:
         optimizer.gamma = save_gamma
-    elif currType == linkage_optimization.OptEnergyType.ContactForce:
-        optimizer.contact_force_weight = save_contact_force_weight
 
     optimizer.invalidateAdjointState()
     gradp = optimizer.gradp_J(optimizer.getFullDesignParameters(), currType)
@@ -957,6 +952,5 @@ def get_component_gradient_norm(optimizer, currType, cshell, full):
     optimizer.gamma = save_gamma
     optimizer.smoothing_weight = save_smoothing_weight
     optimizer.rl_regularization_weight = save_rl_regularization_weight
-    optimizer.contact_force_weight = save_contact_force_weight
     optimizer.invalidateAdjointState()
     return gradNorm

@@ -441,7 +441,7 @@ class PlanarizationOptimizer():
         factorAreaConstraint : the multiplicative factor that determines how far we want to be from the self-intersection frontier
         factorLenConstraint  : the multiplicative factor that tells how much we allow curves length in the deployed and flat state to differ
         areaConstraintLSE    : whether to use LSE to aggregate area constraints
-        bndOnly              : whether we only softly pin teh boundary or all joints
+        bndOnly              : whether we only softly pin the boundary or all joints
     '''
 
     def __init__(self, curves, curvesFamily, targetSurface, jointsFlatInit, jointsDepInit, configPath, 

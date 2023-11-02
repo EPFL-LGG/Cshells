@@ -3,7 +3,7 @@
 template<template<typename> class Object>
 AverageAngleCShellOptimization<Object>::AverageAngleCShellOptimization(Object<Real> &flat, Object<Real> &deployed, const NewtonOptimizerOptions &eopts, std::unique_ptr<LOMinAngleConstraint<Object>> &&minAngleConstraint, int pinJoint, 
                                                                        bool allowFlatActuation, bool optimizeTargetAngle, bool fixDeployedVars, const std::vector<size_t> &additionalFixedFlatVars, const std::vector<size_t> &additionalFixedDeployedVars)
-    : LinkageOptimization<Object>(flat, eopts, deployed.energy(), BBox<Point3D>(deployed.deformedPoints()).dimensions().norm(), deployed.totalRestLength(), deployed.averageAbsRestKappaVars()), 
+    : LinkageOptimization<Object>(flat, eopts, deployed.energy(), BBox<Point3D>(deployed.deformedPoints()).dimensions().norm(), deployed.totalRestLength(), deployed.averageAbsRestKappaVars() < 1.0e-10 ? 1.0 : deployed.averageAbsRestKappaVars()), 
       m_deployed(deployed), m_linesearch_deployed(deployed),
       m_minAngleConstraint(std::move(minAngleConstraint)),
       m_fixDeployedVars(fixDeployedVars),
@@ -11,7 +11,7 @@ AverageAngleCShellOptimization<Object>::AverageAngleCShellOptimization(Object<Re
 {
     std::runtime_error mismatch("Linkage mismatch");
     if (m_numParams != deployed.numDesignParams())                                    throw mismatch;
-    if ((deployed.getDesignParameters() - flat.getDesignParameters()).norm() > 1e-16) throw mismatch;
+    if ((deployed.getDesignParameters() - flat.getDesignParameters()).norm() > 1.0e-16) throw mismatch;
     m_alpha_tgt            = deployed.getAverageActuatedJointsAngle();
     m_Linesearch_alpha_tgt = deployed.getAverageActuatedJointsAngle();
     m_numFullParams        = flat.numDesignParams() + int(m_optimizeTargetAngle);
@@ -22,14 +22,12 @@ AverageAngleCShellOptimization<Object>::AverageAngleCShellOptimization(Object<Re
     using TSF = TargetFittingDOOT<Object>;
     using RLM = RegularizationTermDOOWrapper<Object, RestLengthMinimization>;
     using RCS = RegularizationTermDOOWrapper<Object, RestCurvatureSmoothing>;
-    using CFO = ContactForceObjective<Object>;
     auto &tsf = target_surface_fitter;
     objective.add("ElasticEnergyFlat",      OET::ElasticBase,      std::make_shared<EEO>(m_linesearch_base),          gamma / m_E0);
     objective.add("ElasticEnergyDeployed",  OET::ElasticDeployed,  std::make_shared<EEO>(m_linesearch_deployed),      (1.0 - gamma) / m_E0);
     objective.add("TargetFitting",          OET::Target,           std::make_shared<TSF>(m_linesearch_deployed, tsf), beta / (m_l0 * m_l0));
     objective.add("RestLengthMinimization", OET::Regularization,   std::make_shared<RLM>(m_linesearch_deployed),      1.0 / m_rl0);
-    objective.add("RestCurvatureSmoothing", OET::Smoothing,        std::make_shared<RCS>(m_linesearch_deployed),      10.0 / (m_rk0 * m_rk0));
-    objective.add("ContactForce",           OET::ContactForce,     std::make_shared<CFO>(m_linesearch_deployed),      0.0);
+    objective.add("RestCurvatureSmoothing", OET::Smoothing,        std::make_shared<RCS>(m_linesearch_deployed),      1.0 / (m_rk0 * m_rk0));
 
     // Cannot use enveloppe theorem if we choose to optimize alpha
     setOptimizeTargetAngle(optimizeTargetAngle);
@@ -142,7 +140,7 @@ bool AverageAngleCShellOptimization<Object>::m_updateEquilibria(const Eigen::Ref
     if (newParams.size() != int(nfp))     throw mismatch;
     
     // The linesearch linkage is already up to date
-    if ((getLinesearchDesignParameters() - newParams).norm() < 1e-14) { return false; } 
+    if ((getLinesearchDesignParameters() - newParams).norm() < 1.0e-14) { return false; } 
 
     m_linesearch_deployed.set(m_deployed);
     m_linesearch_base.    set(m_base);
@@ -156,30 +154,8 @@ bool AverageAngleCShellOptimization<Object>::m_updateEquilibria(const Eigen::Ref
         Eigen::VectorXd curr_x3d      = m_deployed.getDoFs();
         curr_x3d[idxAlphaBarDeployed] = m_alpha_tgt;
         m_linesearch_deployed.setDoFs(curr_x3d);
-        // m_deployed_optimizer->get_problem().setLEQConstraintRHS(m_alpha_tgt); 
         m_forceEquilibriumUpdate();
         return true;
-        // The following caching is not working for some reason...
-        // TODO: debug
-        // auto &opt_2D = getFlatOptimizer();
-        // auto &opt_3D = getDeployedOptimizer();
-
-        // if (!(opt_2D.solver.hasStashedFactorization() && opt_3D.solver.hasStashedFactorization()))
-        //     throw std::runtime_error("Factorization was not stashed... was commitLinesearchLinkage() called?");
-
-        // // Copy the stashed factorization into the current one (preserving the stash)
-        // opt_2D.solver.swapStashedFactorization();
-        // opt_3D.solver.swapStashedFactorization();
-        // opt_2D.solver.stashFactorization();
-        // opt_3D.solver.stashFactorization();
-
-        // // The cached adjoint state is invalidated whenever the equilibrium is updated...
-        // m_adjointStateIsCurrent      = false;
-        // m_autodiffLinkagesAreCurrent = false;
-
-        // m_updateClosestPoints();
-        // 
-        // return true;
     }
 
     // Apply the new design parameters and measure the energy with the 0^th order prediction
@@ -198,7 +174,6 @@ bool AverageAngleCShellOptimization<Object>::m_updateEquilibria(const Eigen::Ref
 
     if (m_optimizeTargetAngle) { 
         m_Linesearch_alpha_tgt = newParams[np]; 
-        // m_deployed_optimizer->get_problem().setLEQConstraintRHS(newParams[np]);
     }
 
     // In case we decide not to use first order prediction,
@@ -451,9 +426,7 @@ bool AverageAngleCShellOptimization<Object>::m_updateAdjointState(const Eigen::R
         if (m_minAngleConstraint) {
             auto &opt_2D = getFlatOptimizer();
             Eigen::VectorXd Hinv_b_reduced;
-            // Eigen::VectorXd grad_x = m_minAngleConstraint->grad(m_linesearch_base);
             Eigen::VectorXd grad_x = m_linesearch_base.applyTransformationTransposeDoFSize(m_minAngleConstraint->grad(m_linesearch_base));
-            // Eigen::VectorXd grad_x = m_linesearch_base.applyTransformationDoFSize(m_minAngleConstraint->grad(m_linesearch_base));
             opt_2D.solver.solve(opt_2D.removeFixedEntries(grad_x), Hinv_b_reduced);
             m_s_x = opt_2D.extractFullSolution(Hinv_b_reduced);
         }
@@ -470,22 +443,6 @@ bool AverageAngleCShellOptimization<Object>::m_updateAdjointState(const Eigen::R
 
     return true;
 }
-
-// template<template<typename> class Object>
-// Eigen::VectorXd AverageAngleCShellOptimization<Object>::gradp_J(const Eigen::Ref<const Eigen::VectorXd> &params, OptEnergyType /* opt_eType */) {
-//     m_updateAdjointState(params);
-//     Eigen::VectorXd gradient = 
-//         (      gamma  / m_E0) * m_linesearch_base    .grad_design_parameters(true)
-//         + ((1.0 - gamma) / m_E0) * m_linesearch_deployed.grad_design_parameters(true)
-//         + (beta / (m_l0 * m_l0)) * gradp_J_target(params);
-    
-//     bool use_restLen = m_linesearch_deployed.getDesignParameterConfig().restLen;
-//     bool use_restKappa = m_linesearch_deployed.getDesignParameterConfig().restKappa;
-//     if (use_restLen && use_restKappa) {
-//         for (size_t rli = 0; rli < m_linesearch_deployed.numSegments(); ++rli) gradient[m_linesearch_deployed.numRestKappaVars() + rli] += (1.0 / m_rl0) * getRestLengthMinimizationWeight();
-//     }
-//     return gradient;
-// }
 
 template<template<typename> class Object>
 Eigen::VectorXd AverageAngleCShellOptimization<Object>::gradp_J(const Eigen::Ref<const Eigen::VectorXd> &params, OptEnergyType opt_eType) {
@@ -533,22 +490,12 @@ Eigen::VectorXd AverageAngleCShellOptimization<Object>::gradp_J(const Eigen::Ref
                 } else if (t.type != OptEnergyType::ElasticDeployed) {
                     // We should change variables before inverting the system
                     gradx_obj += m_linesearch_deployed.applyTransformationTransposeDoFSize(t.term->grad_x());
-                    // grad_x += m_linesearch_deployed.applyTransformationDoFSize(t.term->grad_x());
                 } else {
                     // OptEnergyType::ElasticDeployed already expresses the gradient using the change of variables
                     gradx_obj += t.term->grad_x();
                 }
             }
         }
-        // Eigen::VectorXd gradx_obj = m_linesearch_deployed.applyTransformationTransposeDoFSize(objective.grad_x(opt_eType));
-        // Eigen::VectorXd gradx_obj = m_linesearch_deployed.applyTransformationDoFSize(objective.grad_x(opt_eType));
-        // std::cout << "Current target angle " << params[np] << std::endl;
-        // std::cout << "Current angle " << m_linesearch_deployed.getDoFs()[idxAlphaBarDeployed] << std::endl;
-        // std::cout << "Current gradx_adj value " << gradxp_adj[idxAlphaBarDeployed] << std::endl;
-        // std::cout << "Current gradx_obj value " <<  gradx_obj[idxAlphaBarDeployed] << std::endl;
-        // std::cout << "Current gradx_obj size "  <<  gradx_obj.size()               << std::endl;
-        // std::cout << "Current gradx_obj norm "  <<  gradx_obj.norm()               << std::endl;
-        // std::cout << "Current gradp_obj norm "  <<  gradp_obj.norm()               << std::endl;
         gradp_tot[np] = gradxp_adj[idxAlphaBarDeployed] + gradx_obj[idxAlphaBarDeployed]; 
     }
 
@@ -629,14 +576,6 @@ Eigen::VectorXd AverageAngleCShellOptimization<Object>::gradp_angle_constraint(c
     // This should be - ∂^2E/∂α_x∂x s_x + ∂ alpha_min/∂α_x
     if (m_optimizeTargetAngle) { 
         Eigen::VectorXd gradx_obj = m_linesearch_base.applyTransformationTransposeDoFSize(m_minAngleConstraint->grad(m_linesearch_base));
-        // Eigen::VectorXd gradx_obj = m_linesearch_base.applyTransformationDoFSize(m_minAngleConstraint->grad(m_linesearch_base));
-        // std::cout << "Current target angle " << params[np] << std::endl;
-        // std::cout << "Current angle " << m_linesearch_deployed.getDoFs()[idxAlphaBarBase] << std::endl;
-        // std::cout << "Current gradx_adj value " << gradxp_adj[idxAlphaBarBase] << std::endl;
-        // std::cout << "Current gradx_obj value " <<  gradx_obj[idxAlphaBarBase] << std::endl;
-        // std::cout << "Current gradx_obj size "  <<  gradx_obj.size()               << std::endl;
-        // std::cout << "Current gradx_obj norm "  <<  gradx_obj.norm()               << std::endl;
-        // std::cout << "Current gradp_obj norm "  <<  gradp_obj.norm()               << std::endl;
         gradp_tot[np] = gradxp_adj[idxAlphaBarBase] + gradx_obj[idxAlphaBarBase]; 
     }
     return gradp_tot;
@@ -689,8 +628,6 @@ Eigen::VectorXd AverageAngleCShellOptimization<Object>::pushforward(const Eigen:
         Eigen::VectorXd b_reduced_3D = opt_3D.removeFixedEntries(m_linesearch_deployed.applyHessianPerSegmentRestlen(neg_deltap_padded, mask_dxdp).head(nd));
         delta_x3d = opt_3D.extractFullSolution(opt_3D.solver.solve(b_reduced_3D));
         if (m_optimizeTargetAngle){
-            // Should we instead do the following?
-            // delta_x3d[idxAlphaBarDeployed] = newParams[np] - curr_x3d[idxAlphaBarDeployed];
             delta_x3d[idxAlphaBarDeployed] = delta_p[np];
             neg_deltap_padded[idxAlphaBarDeployed] = 0.;           // Reset to 0 for the 2D prediction
             mask_dxdp.dof_in                       = false;        // No need to compute the input DoF block for 2D
@@ -727,8 +664,6 @@ Eigen::VectorXd AverageAngleCShellOptimization<Object>::apply_hess(const Eigen::
     }
 
     auto &opt_3D  = getDeployedOptimizer();
-    // const auto &prob3D = opt_3D.get_problem();
-    // if (!prob3D.hasLEQConstraint()) throw std::runtime_error("The deployed linkage must have a linear equality constraint applied!");
 
     BENCHMARK_STOP_TIMER_SECTION("Preamble");
 
@@ -865,9 +800,7 @@ Eigen::VectorXd AverageAngleCShellOptimization<Object>::apply_hess(const Eigen::
                         continue;
                     } else if (t.type != OptEnergyType::ElasticDeployed) {
                         delta_grad_xp += m_linesearch_deployed.applyTransformationTransposeDoFSize(t.term->delta_grad(m_linesearch_deployed.applyTransformationDoFSize(delta_x3dp), m_linesearch_deployed));
-                        // delta_grad_xp += m_linesearch_deployed.applyTransformationDoFSize(t.term->delta_grad(delta_x3dp, m_linesearch_deployed));
                     } else {
-                        // delta_grad_xp += t.term->delta_grad(delta_x3dp, m_diff_linkage_deployed);
                         delta_grad_xp += t.term->delta_grad(delta_x3dp, m_linesearch_deployed);
                     }
                 }
@@ -1029,25 +962,9 @@ Eigen::VectorXd AverageAngleCShellOptimization<Object>::apply_hess(const Eigen::
 
 template<template<typename> class Object>
 void AverageAngleCShellOptimization<Object>::dumpHessians(const std::string &hess_J_path, const std::string &hess_ac_path, Real fd_eps) {
-    // Eigen::MatrixXd hess_J (m_numParams, m_numParams),
-    //                 hess_ac(m_numParams, m_numParams);
 
     auto curr_params = getFullDesignParameters();
     auto grad_J = gradp_J(curr_params);
-
-    // std::cout << "Evaluating full Hessians" << std::endl;
-    // for (size_t p = 0; p < m_numParams; ++p) {
-    //     hess_J .col(p) = apply_hess_J (curr_params, Eigen::VectorXd::Unit(m_numParams, p));
-    //     hess_ac.col(p) = apply_hess_angle_constraint(curr_params, Eigen::VectorXd::Unit(m_numParams, p));
-    // }
-
-    // std::ofstream hess_J_file(hess_J_path);
-    // hess_J_file.precision(19);
-    // hess_J_file << hess_J << std::endl;
-
-    // std::ofstream hess_ac_file(hess_ac_path);
-    // hess_ac_file.precision(19);
-    // hess_ac_file << hess_ac << std::endl;
 
     size_t nperturbs = 3;
     Eigen::VectorXd relerror_fd_diff_grad_p_J(nperturbs),
@@ -1062,7 +979,6 @@ void AverageAngleCShellOptimization<Object>::dumpHessians(const std::string &hes
     auto w = m_w_x;
     auto H = m_linesearch_deployed.hessian();
     auto Hw = H.apply(w);
-    // Real w_lambda = m_w_lambda;
 
     for (size_t i = 0; i < nperturbs; ++i) {
         Eigen::VectorXd perturb = Eigen::VectorXd::Random(m_numParams + int(m_optimizeTargetAngle));
@@ -1079,7 +995,6 @@ void AverageAngleCShellOptimization<Object>::dumpHessians(const std::string &hes
         auto H_plus_w_plus = m_linesearch_deployed.applyHessian(w_plus);
         auto w_rhs_plus = m_w_rhs;
         auto H_plus = m_linesearch_deployed.hessian();
-        // Real w_lambda_plus = m_w_lambda;
 
         {
             Eigen::VectorXd v = Eigen::VectorXd::Random(m_linesearch_deployed.numDoF());
@@ -1124,7 +1039,6 @@ void AverageAngleCShellOptimization<Object>::dumpHessians(const std::string &hes
         auto Hw_minus = m_linesearch_deployed.applyHessian(w);
         auto H_minus_w_minus = m_linesearch_deployed.applyHessian(w_minus);
         auto w_rhs_minus = m_w_rhs;
-        // Real w_lambda_minus = m_w_lambda;
 
         Real fd_J = (Jplus - Jminus) / (2 * fd_eps);
         relerror_delta_J[i] = std::abs((grad_J.dot(perturb) - fd_J) / fd_J);
@@ -1133,8 +1047,6 @@ void AverageAngleCShellOptimization<Object>::dumpHessians(const std::string &hes
         Eigen::VectorXd fd_delta_w = (w_plus - w_minus) / (2 * fd_eps);
         Eigen::VectorXd fd_delta_x = (x_plus - x_minus) / (2 * fd_eps);
         Eigen::VectorXd fd_delta_Hw = (Hw_plus - Hw_minus) / (2 * fd_eps);
-        // Eigen::VectorXd fd_delta_w_rhs = (w_rhs_plus - w_rhs_minus) / (2 * fd_eps);
-        // Real fd_delta_lambda = (w_lambda_plus - w_lambda_minus) / (2 * fd_eps);
 
 #if 0
         auto fd_H_delta_w = H.apply(fd_delta_w);
@@ -1153,46 +1065,17 @@ void AverageAngleCShellOptimization<Object>::dumpHessians(const std::string &hes
         std::cout << "||H_plus w_plus + a (lambda + delta lambda) - b||: " << opt.removeFixedEntries(soln_error4).norm() << std::endl;
 #endif
 
-        // Eigen::VectorXd fd_diff_grad_p_ac = (gradp_angle_constraint(curr_params + fd_eps * perturb) - gradp_angle_constraint(curr_params - fd_eps * perturb)) / (2 * fd_eps);
-        // relerror_fd_diff_grad_p_ac[i] = (hess_ac * perturb - fd_diff_grad_p_ac).norm() / fd_diff_grad_p_ac.norm();
-
-        // relerror_fd_diff_grad_p_J[i] = (hess_J  * perturb - fd_diff_grad_p_J ).norm() / fd_diff_grad_p_J .norm();
-
         matvec_relerror_fd_diff_grad_p_J[i] = (apply_hess_J(curr_params, perturb) - fd_diff_grad_p_J ).norm() / fd_diff_grad_p_J .norm();
         relerror_delta_x[i] = (m_delta_x3d - fd_delta_x).norm() / fd_delta_x.norm();
         relerror_delta_w[i] = (m_delta_w_x - fd_delta_w).norm() / fd_delta_w.norm();
         relerror_delta_Hw[i] = (m_d3E_w.head(w.size()) - fd_delta_Hw).norm() / fd_delta_Hw.norm();
-        // relerror_delta_w_rhs[i] = (m_delta_w_rhs - fd_delta_w_rhs).norm() / fd_delta_w_rhs.norm();
-
-        // // Eigen::VectorXd semi_analytic_rhs = fd_delta_w_rhs - fd_delta_Hw;
-        // opt.update_factorizations();
-        // Eigen::VectorXd semi_analytic_delta_w = opt.extractFullSolution(opt.kkt_solver(opt.solver, opt.removeFixedEntries(semi_analytic_rhs)));
-        // relerror_semi_analytic_delta_w[i] = (semi_analytic_delta_w - fd_delta_w).norm() / fd_delta_w.norm();
-
-        // {
-        //     std::cout << "semi_analytic_delta_w: " << semi_analytic_delta_w.head(5).transpose() << std::endl;
-        //     std::cout << "delta_w: " << m_delta_w_x.head(5).transpose() << std::endl;
-        //     std::cout << "fd_delta_w: " << fd_delta_w.head(5).transpose() << std::endl;
-        //     std::cout << std::endl;
-
-        //     int idx;
-        //     Real err = (semi_analytic_delta_w - fd_delta_w).cwiseAbs().maxCoeff(&idx);
-        //     std::cout << "greatest abs error " << err << " at entry " << idx << ": "
-        //               <<  semi_analytic_delta_w[idx] << " vs " << fd_delta_w[idx] << std::endl;
-        //     std::cout <<  semi_analytic_delta_w.segment(idx - 5, 10).transpose() << std::endl;
-        //     std::cout << m_delta_w_x.segment(idx - 5, 10).transpose() << std::endl;
-        //     std::cout <<  fd_delta_w.segment(idx - 5, 10).transpose() << std::endl;
-        //     std::cout << std::endl;
-        // }
     }
 
 
     std::cout << "Wrote " << hess_J_path << ", " << hess_ac_path << std::endl;
     std::cout << "Rel errors in delta        J: " << relerror_delta_J .transpose() << std::endl;
-    // std::cout << "Rel errors in hessian-vec  J: " << relerror_fd_diff_grad_p_J .transpose() << std::endl;
     std::cout << "Rel errors in matvec hessian-vec  J: " << matvec_relerror_fd_diff_grad_p_J .transpose() << std::endl;
     std::cout << "Rel errors in delta x: " << relerror_delta_x.transpose() << std::endl;
     std::cout << "Rel errors in delta w: " << relerror_delta_w.transpose() << std::endl;
     std::cout << "Rel errors in delta Hw: " << relerror_delta_Hw.transpose() << std::endl;
-    // std::cout << "Rel errors in delta w rhs: " << relerror_delta_w_rhs.transpose() << std::endl;
 }

@@ -120,32 +120,6 @@ PYBIND11_MODULE(cshell_optimization, m) {
         .def_property("useEnvelopeTheorem", &EEO_AA::useEnvelopeTheorem, &EEO_AA::setUseEnvelopeTheorem)
         ;
 
-    using CFO_AASAL = ContactForceObjective<AASAL_T>;
-    py::class_<CFO_AASAL, DOOT_AASAL, std::shared_ptr<CFO_AASAL>>(m, "ContactForceObjective_AASAL")
-        .def(py::init<const AASAL &>(), py::arg("surface_attracted_linkage"))
-        .def_property(             "normalWeight", &CFO_AASAL::getNormalWeight,              &CFO_AASAL::setNormalWeight)
-        .def_property(         "tangentialWeight", &CFO_AASAL::getTangentialWeight,          &CFO_AASAL::setTangentialWeight)
-        .def_property(             "torqueWeight", &CFO_AASAL::getTorqueWeight,              &CFO_AASAL::setTorqueWeight)
-        .def_property(     "boundaryNormalWeight", &CFO_AASAL::getBoundaryNormalWeight,      &CFO_AASAL::setBoundaryNormalWeight)
-        .def_property( "boundaryTangentialWeight", &CFO_AASAL::getBoundaryTangentialWeight,  &CFO_AASAL::setBoundaryTangentialWeight)
-        .def_property(     "boundaryTorqueWeight", &CFO_AASAL::getBoundaryTorqueWeight,      &CFO_AASAL::setBoundaryTorqueWeight)
-        .def_property("normalActivationThreshold", &CFO_AASAL::getNormalActivationThreshold, &CFO_AASAL::setNormalActivationThreshold)
-        .def("jointForces", [](const CFO_AASAL &cfo) { return cfo.jointForces(); })
-        ;
-
-    using CFO_AA= ContactForceObjective<AverageAngleLinkage_T>;
-    py::class_<CFO_AA, DOOT_AA, std::shared_ptr<CFO_AA>>(m, "ContactForceObjective_AA")
-        .def(py::init<const AverageAngleLinkage &>(), py::arg("rod_linkage"))
-        .def_property(             "normalWeight", &CFO_AA::getNormalWeight,              &CFO_AA::setNormalWeight)
-        .def_property(         "tangentialWeight", &CFO_AA::getTangentialWeight,          &CFO_AA::setTangentialWeight)
-        .def_property(             "torqueWeight", &CFO_AA::getTorqueWeight,              &CFO_AA::setTorqueWeight)
-        .def_property(     "boundaryNormalWeight", &CFO_AA::getBoundaryNormalWeight,      &CFO_AA::setBoundaryNormalWeight)
-        .def_property( "boundaryTangentialWeight", &CFO_AA::getBoundaryTangentialWeight,  &CFO_AA::setBoundaryTangentialWeight)
-        .def_property(     "boundaryTorqueWeight", &CFO_AA::getBoundaryTorqueWeight,      &CFO_AA::setBoundaryTorqueWeight)
-        .def_property("normalActivationThreshold", &CFO_AA::getNormalActivationThreshold, &CFO_AA::setNormalActivationThreshold)
-        .def("jointForces", [](const CFO_AA &cfo) { return cfo.jointForces(); })
-        ;
-
     using TFO_AASAL = TargetFittingDOOT<AASAL_T>;
     py::class_<TFO_AASAL, DOOT_AASAL, std::shared_ptr<TFO_AASAL>>(m, "TargetFittingDOOT_AASAL")
         .def(py::init<const AASAL &, TargetSurfaceFitter &>(), py::arg("surface_attracted_linkage"), py::arg("targetSurfaceFitter"))
