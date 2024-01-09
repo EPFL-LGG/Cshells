@@ -53,7 +53,7 @@ git clone --recursive git@github.com:EPFL-LGG/Cshells.git
 cd Cshells
 ```
 
-### Python environement
+### Python environment
 
 The dependencies can be installed as follow
 
